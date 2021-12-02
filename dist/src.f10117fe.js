@@ -442,13 +442,13 @@ var __generator = this && this.__generator || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Task1 = void 0;
+exports.CompareData = exports.Task1 = void 0;
 
 var Requests_1 = require("../helpers/Requests");
 
 var Task1 = function Task1() {
   return __awaiter(void 0, void 0, void 0, function () {
-    var LSCountriesData, localStorageSavedData, currentDate, msOf7Days, countries, LSdate, dateFromLocalStorage, numericDateFromLS, localStorageData, currDate, nextUpdate, oldData, newData, CompareData;
+    var LSCountriesData, localStorageSavedData, currentDate, msOf7Days, countries, LSdate, dateFromLocalStorage, numericDateFromLS, localStorageData, currDate, nextUpdate, oldData, newData;
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
@@ -496,20 +496,7 @@ var Task1 = function Task1() {
 
         case 3:
           newData = _a.sent();
-
-          CompareData = function CompareData(oldest, newest) {
-            var changedData = [];
-            oldest.forEach(function (old) {
-              newest.forEach(function (curr) {
-                if (old.alpha2Code === curr.alpha2Code) {
-                  old.population !== curr.population ? changedData.push(old.name) : null;
-                }
-              });
-            });
-            return changedData;
-          };
-
-          console.log('🟨 Changed data is in:', CompareData(oldData, newData));
+          console.log('🟨 Changed data is in:', exports.CompareData(oldData, newData));
           localStorage.setItem('allCountries', JSON.stringify(newData));
           localStorage.setItem('dataWhenSaved', currentDate);
           _a.label = 4;
@@ -524,6 +511,21 @@ var Task1 = function Task1() {
 };
 
 exports.Task1 = Task1;
+
+var CompareData = function CompareData(oldest, newest) {
+  var changedData = [];
+  if (oldest === undefined || newest === undefined || oldest === null || newest === null) return '❗️ Enter correct data! ❗️';
+  oldest.forEach(function (old) {
+    newest.forEach(function (curr) {
+      if (old.alpha2Code === curr.alpha2Code) {
+        old.population !== curr.population ? changedData.push(old.name) : null;
+      }
+    });
+  });
+  return changedData;
+};
+
+exports.CompareData = CompareData;
 },{"../helpers/Requests":"src/helpers/Requests.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -564,7 +566,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55924" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57560" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

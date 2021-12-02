@@ -2,7 +2,7 @@ import { CountriesData } from '../helpers/Requests';
 import { Country } from '../helpers/interfaces';
 
 export const Task1 = async () => {
-  //removes null and undefined from the type of an expression.
+  // ! - Removes null and undefined from the type of an expression.
   let LSCountriesData!: Country[];
   const localStorageSavedData: string | null = localStorage.getItem('allCountries');
   typeof localStorageSavedData === 'string' ? (LSCountriesData = JSON.parse(localStorageSavedData)) : null;
@@ -43,24 +43,26 @@ export const Task1 = async () => {
       const oldData: Country[] = localStorageData;
       const newData: Country[] = await CountriesData();
 
-      const CompareData = (oldest: Country[], newest: Country[]): string[] => {
-        const changedData: string[] = [];
-
-        oldest.forEach((old) => {
-          newest.forEach((curr) => {
-            if (old.alpha2Code === curr.alpha2Code) {
-              old.population !== curr.population ? changedData.push(old.name) : null;
-            }
-          });
-        });
-
-        return changedData;
-      };
-
       console.log('🟨 Changed data is in:', CompareData(oldData, newData));
 
       localStorage.setItem('allCountries', JSON.stringify(newData));
       localStorage.setItem('dataWhenSaved', currentDate);
     }
   }
+};
+
+export const CompareData = (oldest: Country[] | undefined | null, newest: Country[] | undefined | null): string[] | string => {
+  const changedData: string[] = [];
+
+  if (oldest === undefined || newest === undefined || oldest === null || newest === null) return '❗️ Enter correct data! ❗️';
+
+  oldest.forEach((old) => {
+    newest.forEach((curr) => {
+      if (old.alpha2Code === curr.alpha2Code) {
+        old.population !== curr.population ? changedData.push(old.name) : null;
+      }
+    });
+  });
+
+  return changedData;
 };

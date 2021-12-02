@@ -1,4 +1,4 @@
-export interface Country {
+export interface Country<> {
   alpha2Code: string;
   alpha3Code: string;
   altSpellings: Array<string>;
@@ -23,17 +23,9 @@ export interface Country {
   subregion: string;
   timezones: Array<string>;
   topLevelDomain: Array<string>;
-  translations: {
-    br: string;
-    de: string;
-    es: string;
-    fa: string;
-    fr: string;
-    hr: string;
-    hu: string;
-    it: string;
-    ja: string;
-    nl: string;
-    pt: string;
-  };
+  translations: translation;
 }
+
+type translation = {
+  [key: string]: string;
+};

@@ -442,7 +442,7 @@ var __generator = this && this.__generator || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CompareData = exports.Task1 = void 0;
+exports.compareData = exports.Task1 = void 0;
 
 var Requests_1 = require("../helpers/Requests");
 
@@ -452,6 +452,7 @@ var Task1 = function Task1() {
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
+          LSCountriesData = [];
           localStorageSavedData = localStorage.getItem('allCountries');
           typeof localStorageSavedData === 'string' ? LSCountriesData = JSON.parse(localStorageSavedData) : null;
           currentDate = Date.now().toString();
@@ -469,7 +470,7 @@ var Task1 = function Task1() {
 
           localStorage.setItem('allCountries', JSON.stringify(countries));
           localStorage.setItem('dataWhenSaved', currentDate);
-          console.log('📝 Data saved in localStorage.');
+          console.log('\n📝 Data saved in localStorage.');
           return [3
           /*break*/
           , 4];
@@ -483,8 +484,8 @@ var Task1 = function Task1() {
           currDate = parseInt(currentDate);
           nextUpdate = numericDateFromLS + msOf7Days;
           console.log('✔️ Data exist in localStorage ✔️');
-          console.log('📅 Data of save:', new Date(numericDateFromLS));
-          console.log('📄 localStorage data:', localStorageData);
+          console.log('\n📅 Data of save:\n\n', new Date(numericDateFromLS));
+          console.log('\n📄 localStorage data:\n', localStorageData);
           if (!(currDate >= nextUpdate)) return [3
           /*break*/
           , 4];
@@ -496,7 +497,7 @@ var Task1 = function Task1() {
 
         case 3:
           newData = _a.sent();
-          console.log('🟨 Changed data is in:', exports.CompareData(oldData, newData));
+          console.log('🟨 Changed data is in:\n', exports.compareData(oldData, newData));
           localStorage.setItem('allCountries', JSON.stringify(newData));
           localStorage.setItem('dataWhenSaved', currentDate);
           _a.label = 4;
@@ -512,9 +513,9 @@ var Task1 = function Task1() {
 
 exports.Task1 = Task1;
 
-var CompareData = function CompareData(oldest, newest) {
+var compareData = function compareData(oldest, newest) {
   var changedData = [];
-  if (oldest === undefined || newest === undefined || oldest === null || newest === null) return '❗️ Enter correct data! ❗️';
+  if (newest === undefined || newest === null || oldest === null || oldest === undefined || typeof newest === 'string' || typeof newest === 'number' || typeof oldest === 'string' || typeof oldest === 'number') return '❗️ Enter correct data! ❗️';
   oldest.forEach(function (old) {
     newest.forEach(function (curr) {
       if (old.alpha2Code === curr.alpha2Code) {
@@ -525,8 +526,252 @@ var CompareData = function CompareData(oldest, newest) {
   return changedData;
 };
 
-exports.CompareData = CompareData;
-},{"../helpers/Requests":"src/helpers/Requests.ts"}],"src/index.ts":[function(require,module,exports) {
+exports.compareData = compareData;
+},{"../helpers/Requests":"src/helpers/Requests.ts"}],"src/task2/Task2.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var __assign = this && this.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = this && this.__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.calculateSum5MostPopulateCountries = exports.sortByPopulationDesc = exports.selectCountriesIncludesA = exports.getAllEUCountries = exports.Task2 = void 0;
+
+var Task2 = function Task2() {
+  return __awaiter(void 0, void 0, void 0, function () {
+    var LSCountriesData, localStorageSavedData, arrayWithEUCountries, arrayOfEUCountriesIncludesA, sortedArray, limitedSortedArray, populateOfLimitedArray, isBigger;
+    return __generator(this, function (_a) {
+      localStorageSavedData = localStorage.getItem('allCountries');
+      typeof localStorageSavedData === 'string' ? LSCountriesData = JSON.parse(localStorageSavedData) : null;
+      arrayWithEUCountries = exports.getAllEUCountries(LSCountriesData);
+      console.log('\n🔹 Countries of the 🇪🇺: \n', arrayWithEUCountries);
+      arrayOfEUCountriesIncludesA = exports.selectCountriesIncludesA(arrayWithEUCountries);
+      console.log('\n🔹 Countries of the 🇪🇺 include 🅰:\n', arrayOfEUCountriesIncludesA);
+      sortedArray = exports.sortByPopulationDesc(arrayOfEUCountriesIncludesA);
+      console.log('\n🔹 Countries of the 🇪🇺 include 🅰, sorted 📉: \n', sortedArray);
+      limitedSortedArray = sortedArray.slice(0, 5);
+      populateOfLimitedArray = exports.calculateSum5MostPopulateCountries(limitedSortedArray);
+      isBigger = populateOfLimitedArray > 500000000 ? '↗️ bigger' : '↘️ less';
+      console.log('\n🔹 Countries of the 🇪🇺 include 🅰, sorted 📉 and calculate population ➕: \n\n   Population 5 most populous countries is equal:', populateOfLimitedArray, "And it's " + isBigger + " than 500 million");
+      return [2
+      /*return*/
+      ];
+    });
+  });
+};
+
+exports.Task2 = Task2;
+
+var getAllEUCountries = function getAllEUCountries(countries) {
+  var arrayOfEUCountries = [];
+  if (countries === undefined || countries === null || typeof countries === 'string' || typeof countries === 'number') return '❗️ Enter correct data! ❗️';
+  countries.filter(function (country) {
+    var _a;
+
+    (_a = country.regionalBlocs) === null || _a === void 0 ? void 0 : _a.forEach(function (c) {
+      return c.acronym === 'EU' ? arrayOfEUCountries.push(__assign({}, country)) : null;
+    });
+  });
+  return arrayOfEUCountries;
+};
+
+exports.getAllEUCountries = getAllEUCountries;
+
+var selectCountriesIncludesA = function selectCountriesIncludesA(countries) {
+  if (countries === undefined || countries === null || typeof countries === 'string' || typeof countries === 'number') return '❗️ Enter correct data! ❗️';
+  var arrayCountriesIncludeA = countries.filter(function (country) {
+    return country.name.includes('a');
+  });
+  return arrayCountriesIncludeA;
+};
+
+exports.selectCountriesIncludesA = selectCountriesIncludesA;
+
+var sortByPopulationDesc = function sortByPopulationDesc(array) {
+  var sortArrayDesc = function sortArrayDesc(first, next) {
+    return next.population - first.population;
+  };
+
+  if (_typeof(array) === 'object' && array !== null) {
+    var sortArray = JSON.parse(JSON.stringify(array));
+    sortArray.sort(sortArrayDesc);
+    return sortArray;
+  } else return '❗️ Enter correct data! ❗️';
+};
+
+exports.sortByPopulationDesc = sortByPopulationDesc;
+
+var calculateSum5MostPopulateCountries = function calculateSum5MostPopulateCountries(array) {
+  if (_typeof(array) === 'object' && array !== null) {
+    var populate_1 = 0;
+    array.forEach(function (country) {
+      return populate_1 += country.population;
+    });
+    return populate_1;
+  } else return '❗️ Enter correct data! ❗️';
+};
+
+exports.calculateSum5MostPopulateCountries = calculateSum5MostPopulateCountries;
+},{}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -535,10 +780,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var Task1_1 = require("./task1/Task1");
 
+var Task2_1 = require("./task2/Task2");
+
 window.onload = function () {
+  console.log('╔═══════════════╗\n║    Task 1     ║\n╚═══════════════╝');
   Task1_1.Task1();
+  console.log('╔═══════════════╗\n║    Task 2     ║\n╚═══════════════╝');
+  Task2_1.Task2();
 };
-},{"./task1/Task1":"src/task1/Task1.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+console.log();
+},{"./task1/Task1":"src/task1/Task1.ts","./task2/Task2":"src/task2/Task2.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -566,7 +818,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57560" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64889" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -3,7 +3,7 @@ import { Country } from '../helpers/interfaces';
 
 export const Task1 = async () => {
   // ! - Removes null and undefined from the type of an expression.
-  let LSCountriesData!: Country[];
+  let LSCountriesData: Country[] = [];
   const localStorageSavedData: string | null = localStorage.getItem('allCountries');
   typeof localStorageSavedData === 'string' ? (LSCountriesData = JSON.parse(localStorageSavedData)) : null;
 
@@ -21,7 +21,7 @@ export const Task1 = async () => {
     localStorage.setItem('allCountries', JSON.stringify(countries));
     localStorage.setItem('dataWhenSaved', currentDate);
 
-    console.log('📝 Data saved in localStorage.');
+    console.log('\n📝 Data saved in localStorage.');
   } else {
     let LSdate: string;
     const dateFromLocalStorage: string | null = localStorage.getItem('dataWhenSaved');
@@ -33,8 +33,8 @@ export const Task1 = async () => {
     const nextUpdate: number = numericDateFromLS + msOf7Days;
 
     console.log('✔️ Data exist in localStorage ✔️');
-    console.log('📅 Data of save:', new Date(numericDateFromLS));
-    console.log('📄 localStorage data:', localStorageData);
+    console.log('\n📅 Data of save:\n\n', new Date(numericDateFromLS));
+    console.log('\n📄 localStorage data:\n', localStorageData);
 
     // If you exceed possiblyNextUpdateData proceed
     if (currDate >= nextUpdate) {
@@ -43,7 +43,7 @@ export const Task1 = async () => {
       const oldData: Country[] = localStorageData;
       const newData: Country[] = await CountriesData();
 
-      console.log('🟨 Changed data is in:', CompareData(oldData, newData));
+      console.log('🟨 Changed data is in:\n', compareData(oldData, newData));
 
       localStorage.setItem('allCountries', JSON.stringify(newData));
       localStorage.setItem('dataWhenSaved', currentDate);
@@ -51,10 +51,20 @@ export const Task1 = async () => {
   }
 };
 
-export const CompareData = (oldest: Country[] | undefined | null, newest: Country[] | undefined | null): string[] | string => {
+export const compareData = (oldest: Country[] | undefined | null | string | number, newest: Country[] | undefined | null | string | number): string[] | string => {
   const changedData: string[] = [];
 
-  if (oldest === undefined || newest === undefined || oldest === null || newest === null) return '❗️ Enter correct data! ❗️';
+  if (
+    newest === undefined ||
+    newest === null ||
+    oldest === null ||
+    oldest === undefined ||
+    typeof newest === 'string' ||
+    typeof newest === 'number' ||
+    typeof oldest === 'string' ||
+    typeof oldest === 'number'
+  )
+    return '❗️ Enter correct data! ❗️';
 
   oldest.forEach((old) => {
     newest.forEach((curr) => {

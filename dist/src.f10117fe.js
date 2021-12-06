@@ -270,7 +270,6 @@ exports.CountriesData = void 0;
 
 var CountriesData = function CountriesData() {
   return __awaiter(void 0, void 0, void 0, function () {
-    var data;
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
@@ -283,10 +282,9 @@ var CountriesData = function CountriesData() {
           })];
 
         case 1:
-          data = _a.sent();
           return [2
           /*return*/
-          , data];
+          , _a.sent()];
       }
     });
   });
@@ -448,16 +446,19 @@ var Requests_1 = require("../helpers/Requests");
 
 var Task1 = function Task1() {
   return __awaiter(void 0, void 0, void 0, function () {
-    var LSCountriesData, localStorageSavedData, currentDate, msOf7Days, countries, LSdate, dateFromLocalStorage, numericDateFromLS, localStorageData, currDate, nextUpdate, oldData, newData;
+    var configuration, localStorageSavedData, localStorageCountriesData, currentDate, msOf7Days, countries, dateFromLocalStorage, lastSaveDate, numericDateFromLocalStorage, localStorageData, currDate, nextUpdate, oldData, newData;
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
-          LSCountriesData = [];
-          localStorageSavedData = localStorage.getItem('allCountries');
-          typeof localStorageSavedData === 'string' ? LSCountriesData = JSON.parse(localStorageSavedData) : null;
-          currentDate = Date.now().toString();
+          configuration = {
+            countriesKey: 'allCountries',
+            dateKey: 'dateWhenSaved'
+          };
+          localStorageSavedData = localStorage.getItem(configuration.countriesKey);
+          localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
+          currentDate = Date.now();
           msOf7Days = 604800000;
-          if (!!LSCountriesData) return [3
+          if (!!localStorageCountriesData) return [3
           /*break*/
           , 2];
           console.log('❗ Data does not exist ❗');
@@ -468,23 +469,22 @@ var Task1 = function Task1() {
         case 1:
           countries = _a.sent(); // Save countries data to LocalStorage, save
 
-          localStorage.setItem('allCountries', JSON.stringify(countries));
-          localStorage.setItem('dataWhenSaved', currentDate);
+          localStorage.setItem(configuration.countriesKey, JSON.stringify(countries));
+          localStorage.setItem(configuration.dateKey, currentDate.toString());
           console.log('\n📝 Data saved in localStorage.');
           return [3
           /*break*/
           , 4];
 
         case 2:
-          LSdate = void 0;
-          dateFromLocalStorage = localStorage.getItem('dataWhenSaved');
-          typeof dateFromLocalStorage === 'string' ? LSdate = dateFromLocalStorage : LSdate = currentDate;
-          numericDateFromLS = parseInt(LSdate);
-          localStorageData = LSCountriesData;
-          currDate = parseInt(currentDate);
-          nextUpdate = numericDateFromLS + msOf7Days;
+          dateFromLocalStorage = localStorage.getItem(configuration.dateKey);
+          lastSaveDate = typeof dateFromLocalStorage === 'string' ? parseInt(dateFromLocalStorage) : currentDate;
+          numericDateFromLocalStorage = lastSaveDate;
+          localStorageData = localStorageCountriesData;
+          currDate = currentDate;
+          nextUpdate = numericDateFromLocalStorage + msOf7Days;
           console.log('✔️ Data exist in localStorage ✔️');
-          console.log('\n📅 Data of save:\n\n', new Date(numericDateFromLS));
+          console.log('\n📅 Data of save:\n\n', new Date(numericDateFromLocalStorage));
           console.log('\n📄 localStorage data:\n', localStorageData);
           if (!(currDate >= nextUpdate)) return [3
           /*break*/
@@ -498,8 +498,8 @@ var Task1 = function Task1() {
         case 3:
           newData = _a.sent();
           console.log('🟨 Changed data is in:\n', exports.compareData(oldData, newData));
-          localStorage.setItem('allCountries', JSON.stringify(newData));
-          localStorage.setItem('dataWhenSaved', currentDate);
+          localStorage.setItem(configuration.countriesKey, JSON.stringify(newData));
+          localStorage.setItem(configuration.dateKey, currentDate.toString());
           _a.label = 4;
 
         case 4:
@@ -515,13 +515,10 @@ exports.Task1 = Task1;
 
 var compareData = function compareData(oldest, newest) {
   var changedData = [];
-  if (newest === undefined || newest === null || oldest === null || oldest === undefined || typeof newest === 'string' || typeof newest === 'number' || typeof oldest === 'string' || typeof oldest === 'number') return '❗️ Enter correct data! ❗️';
-  oldest.forEach(function (old) {
-    newest.forEach(function (curr) {
-      if (old.alpha2Code === curr.alpha2Code) {
-        old.population !== curr.population ? changedData.push(old.name) : null;
-      }
-    });
+  oldest.forEach(function (old, i) {
+    if (old.alpha2Code === newest[i].alpha2Code) {
+      old.population !== newest[i].population ? changedData.push(old.name) : null;
+    }
   });
   return changedData;
 };
@@ -711,7 +708,7 @@ var Task2 = function Task2() {
       limitedSortedArray = sortedArray.slice(0, 5);
       populateOfLimitedArray = exports.calculateSum5MostPopulateCountries(limitedSortedArray);
       isBigger = populateOfLimitedArray > 500000000 ? '↗️ bigger' : '↘️ less';
-      console.log('\n🔹 Countries of the 🇪🇺 include 🅰, sorted 📉 and calculate population ➕: \n\n   Population 5 most populous countries is equal:', populateOfLimitedArray, "And it's " + isBigger + " than 500 million");
+      console.log('\n🔹 Countries of the 🇪🇺 include 🅰, sorted 📉 and calculate population ➕: \n\n   Population 5 most populous countries is equal:', populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
       return [2
       /*return*/
       ];
@@ -787,6 +784,7 @@ window.onload = function () {
   Task1_1.Task1();
   console.log('╔═══════════════╗\n║    Task 2     ║\n╚═══════════════╝');
   Task2_1.Task2();
+  console.log('╔═══════════════╗\n║     Logs      ║\n╚═══════════════╝');
 };
 
 console.log();
@@ -818,7 +816,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64889" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63328" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

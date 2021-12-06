@@ -1,9 +1,9 @@
-import { test1, test2, test3 } from '../mocks/Country';
+import { afghanistan, afghanistanWithChangedPopulation, togo } from '../mocks/Country';
 import { sortByPopulationDesc } from '../task2/Task2';
 
 describe('Tests for Task 2: Sort array with EU countries by population (desc)', () => {
   test('Correct data', () => {
-    expect(sortByPopulationDesc([...test1, ...test2, ...test3])).toStrictEqual([...test3, ...test2, ...test1]);
+    expect(sortByPopulationDesc([...afghanistan, ...afghanistanWithChangedPopulation, ...togo])).toStrictEqual([...afghanistanWithChangedPopulation, ...afghanistan, ...togo]);
   });
 
   test('Undefined data', () => {

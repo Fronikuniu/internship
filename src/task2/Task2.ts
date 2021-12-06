@@ -24,7 +24,7 @@ export const Task2 = async () => {
   console.log(
     '\n🔹 Countries of the 🇪🇺 include 🅰, sorted 📉 and calculate population ➕: \n\n   Population 5 most populous countries is equal:',
     populateOfLimitedArray,
-    `And it's ${isBigger} than 500 million`
+    `And it's ${isBigger} than 500 million.`
   );
 };
 

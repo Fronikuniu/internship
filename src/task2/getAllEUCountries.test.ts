@@ -1,13 +1,13 @@
-import { test1, test2 } from '../mocks/Country';
+import { afghanistan, poland } from '../mocks/Country';
 import { getAllEUCountries } from '../task2/Task2';
 
 describe('Tests for Task 2: Select only countries that belong to the EU', () => {
   test('Data with EU country', () => {
-    expect(getAllEUCountries([...test1, ...test2])).toStrictEqual([...test2]);
+    expect(getAllEUCountries([...afghanistan, ...poland])).toStrictEqual([...poland]);
   });
 
   test('Data without EU country', () => {
-    expect(getAllEUCountries([...test1, ...test1])).toStrictEqual([]);
+    expect(getAllEUCountries([...afghanistan, ...afghanistan])).toStrictEqual([]);
   });
 
   test('Undefined data', () => {

@@ -1,12 +1,11 @@
-import { Country } from '../helpers/interfaces';
+import { Country } from '../types/interfaces';
 
 export const Task2 = async () => {
-  let LSCountriesData!: Country[];
   const localStorageSavedData: string | null = localStorage.getItem('allCountries');
-  typeof localStorageSavedData === 'string' ? (LSCountriesData = JSON.parse(localStorageSavedData)) : null;
+  const localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
 
   // Select all EU countries
-  const arrayWithEUCountries: Country[] | string = getAllEUCountries(LSCountriesData);
+  const arrayWithEUCountries: Country[] | string = getAllEUCountries(localStorageCountriesData);
   console.log('\n🔹 Countries of the 🇪🇺: \n', arrayWithEUCountries);
 
   // From all EU countries take countries which include 'a'
@@ -28,46 +27,36 @@ export const Task2 = async () => {
   );
 };
 
-export const getAllEUCountries = (countries: Country[] | null | undefined | string | number): Country[] | string => {
-  let arrayOfEUCountries: Country[] = [];
-
-  if (countries === undefined || countries === null || typeof countries === 'string' || typeof countries === 'number') return '❗️ Enter correct data! ❗️';
-
-  countries.filter((country) => {
-    country.regionalBlocs?.forEach((c) => (c.acronym === 'EU' ? arrayOfEUCountries.push({ ...country }) : null));
+export const getAllEUCountries = (countries: Country[]): Country[] => {
+  const arrayOfEUCountries = countries.filter((country) => {
+    return country.regionalBlocs?.some((c) => c.acronym === 'EU');
   });
 
   return arrayOfEUCountries;
 };
 
-export const selectCountriesIncludesA = (countries: Country[] | string | number | null | undefined): Country[] | string => {
-  if (countries === undefined || countries === null || typeof countries === 'string' || typeof countries === 'number') return '❗️ Enter correct data! ❗️';
-
+export const selectCountriesIncludesA = (countries: Country[]): Country[] => {
   const arrayCountriesIncludeA: Country[] = countries.filter((country) => country.name.includes('a'));
 
   return arrayCountriesIncludeA;
 };
 
-export const sortByPopulationDesc = (array: Country[] | string | number | null | undefined): Country[] | string => {
+export const sortByPopulationDesc = (array: Country[]): Country[] => {
   const sortArrayDesc = (first: Country, next: Country) => {
     return next.population - first.population;
   };
 
-  if (typeof array === 'object' && array !== null) {
-    const sortArray: Country[] = JSON.parse(JSON.stringify(array));
-    sortArray.sort(sortArrayDesc);
+  const sortArray: Country[] = [...array];
+  sortArray.sort(sortArrayDesc);
 
-    return sortArray;
-  } else return '❗️ Enter correct data! ❗️';
+  return sortArray;
 };
 
-export const calculateSum5MostPopulateCountries = (array: Country[] | string | number | null | undefined): number | string => {
-  if (typeof array === 'object' && array !== null) {
-    let populate = 0;
-    array.forEach((country) => {
-      return (populate += country.population);
-    });
+export const calculateSum5MostPopulateCountries = (array: Country[]): number => {
+  let populate = 0;
+  array.forEach((country) => {
+    populate += country.population;
+  });
 
-    return populate;
-  } else return '❗️ Enter correct data! ❗️';
+  return populate;
 };

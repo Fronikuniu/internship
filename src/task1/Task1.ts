@@ -1,8 +1,8 @@
 import { CountriesData } from '../helpers/Requests';
-import { Conf, Country } from '../helpers/interfaces';
+import { Country } from '../types/interfaces';
 
 export const Task1 = async () => {
-  const configuration: Conf = {
+  const configuration = {
     countriesKey: 'allCountries',
     dateKey: 'dateWhenSaved',
   };

@@ -527,24 +527,6 @@ exports.compareData = compareData;
 },{"../helpers/Requests":"src/helpers/Requests.ts"}],"src/task2/Task2.ts":[function(require,module,exports) {
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-var __assign = this && this.__assign || function () {
-  __assign = Object.assign || function (t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-
-      for (var p in s) {
-        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-      }
-    }
-
-    return t;
-  };
-
-  return __assign.apply(this, arguments);
-};
-
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function (resolve) {
@@ -688,6 +670,14 @@ var __generator = this && this.__generator || function (thisArg, body) {
   }
 };
 
+var __spreadArray = this && this.__spreadArray || function (to, from) {
+  for (var i = 0, il = from.length, j = to.length; i < il; i++, j++) {
+    to[j] = from[i];
+  }
+
+  return to;
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -695,11 +685,11 @@ exports.calculateSum5MostPopulateCountries = exports.sortByPopulationDesc = expo
 
 var Task2 = function Task2() {
   return __awaiter(void 0, void 0, void 0, function () {
-    var LSCountriesData, localStorageSavedData, arrayWithEUCountries, arrayOfEUCountriesIncludesA, sortedArray, limitedSortedArray, populateOfLimitedArray, isBigger;
+    var localStorageSavedData, localStorageCountriesData, arrayWithEUCountries, arrayOfEUCountriesIncludesA, sortedArray, limitedSortedArray, populateOfLimitedArray, isBigger;
     return __generator(this, function (_a) {
       localStorageSavedData = localStorage.getItem('allCountries');
-      typeof localStorageSavedData === 'string' ? LSCountriesData = JSON.parse(localStorageSavedData) : null;
-      arrayWithEUCountries = exports.getAllEUCountries(LSCountriesData);
+      localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
+      arrayWithEUCountries = exports.getAllEUCountries(localStorageCountriesData);
       console.log('\n🔹 Countries of the 🇪🇺: \n', arrayWithEUCountries);
       arrayOfEUCountriesIncludesA = exports.selectCountriesIncludesA(arrayWithEUCountries);
       console.log('\n🔹 Countries of the 🇪🇺 include 🅰:\n', arrayOfEUCountriesIncludesA);
@@ -719,13 +709,11 @@ var Task2 = function Task2() {
 exports.Task2 = Task2;
 
 var getAllEUCountries = function getAllEUCountries(countries) {
-  var arrayOfEUCountries = [];
-  if (countries === undefined || countries === null || typeof countries === 'string' || typeof countries === 'number') return '❗️ Enter correct data! ❗️';
-  countries.filter(function (country) {
+  var arrayOfEUCountries = countries.filter(function (country) {
     var _a;
 
-    (_a = country.regionalBlocs) === null || _a === void 0 ? void 0 : _a.forEach(function (c) {
-      return c.acronym === 'EU' ? arrayOfEUCountries.push(__assign({}, country)) : null;
+    return (_a = country.regionalBlocs) === null || _a === void 0 ? void 0 : _a.some(function (c) {
+      return c.acronym === 'EU';
     });
   });
   return arrayOfEUCountries;
@@ -734,7 +722,6 @@ var getAllEUCountries = function getAllEUCountries(countries) {
 exports.getAllEUCountries = getAllEUCountries;
 
 var selectCountriesIncludesA = function selectCountriesIncludesA(countries) {
-  if (countries === undefined || countries === null || typeof countries === 'string' || typeof countries === 'number') return '❗️ Enter correct data! ❗️';
   var arrayCountriesIncludeA = countries.filter(function (country) {
     return country.name.includes('a');
   });
@@ -748,23 +735,20 @@ var sortByPopulationDesc = function sortByPopulationDesc(array) {
     return next.population - first.population;
   };
 
-  if (_typeof(array) === 'object' && array !== null) {
-    var sortArray = JSON.parse(JSON.stringify(array));
-    sortArray.sort(sortArrayDesc);
-    return sortArray;
-  } else return '❗️ Enter correct data! ❗️';
+  var sortArray = __spreadArray([], array);
+
+  sortArray.sort(sortArrayDesc);
+  return sortArray;
 };
 
 exports.sortByPopulationDesc = sortByPopulationDesc;
 
 var calculateSum5MostPopulateCountries = function calculateSum5MostPopulateCountries(array) {
-  if (_typeof(array) === 'object' && array !== null) {
-    var populate_1 = 0;
-    array.forEach(function (country) {
-      return populate_1 += country.population;
-    });
-    return populate_1;
-  } else return '❗️ Enter correct data! ❗️';
+  var populate = 0;
+  array.forEach(function (country) {
+    populate += country.population;
+  });
+  return populate;
 };
 
 exports.calculateSum5MostPopulateCountries = calculateSum5MostPopulateCountries;
@@ -816,7 +800,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63328" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53001" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

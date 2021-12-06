@@ -29,8 +29,3 @@ export interface Country<> {
 type translation = {
   [key: string]: string;
 };
-
-export interface Conf {
-  countriesKey: string;
-  dateKey: string;
-}

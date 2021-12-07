@@ -681,24 +681,27 @@ var __spreadArray = this && this.__spreadArray || function (to, from) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.calculateSum5MostPopulateCountries = exports.sortByPopulationDesc = exports.selectCountriesIncludesA = exports.getAllEUCountries = exports.Task2 = void 0;
+exports.calculateSumPopulateCountries = exports.sortByPopulation = exports.selectCountriesIncludesAnyLetter = exports.getAllCountriesByAcronym = exports.Task2 = void 0;
 
 var Task2 = function Task2() {
   return __awaiter(void 0, void 0, void 0, function () {
-    var localStorageSavedData, localStorageCountriesData, arrayWithEUCountries, arrayOfEUCountriesIncludesA, sortedArray, limitedSortedArray, populateOfLimitedArray, isBigger;
+    var localStorageSavedData, localStorageCountriesData, enterAcronym, arrayWithEUCountries, enterLetter, arrayOfEUCountriesIncludesA, sortType, sortedArray, enterLimit, populateOfLimitedArray, isBigger;
     return __generator(this, function (_a) {
       localStorageSavedData = localStorage.getItem('allCountries');
       localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
-      arrayWithEUCountries = exports.getAllEUCountries(localStorageCountriesData);
-      console.log('\n🔹 Countries of the 🇪🇺: \n', arrayWithEUCountries);
-      arrayOfEUCountriesIncludesA = exports.selectCountriesIncludesA(arrayWithEUCountries);
-      console.log('\n🔹 Countries of the 🇪🇺 include 🅰:\n', arrayOfEUCountriesIncludesA);
-      sortedArray = exports.sortByPopulationDesc(arrayOfEUCountriesIncludesA);
-      console.log('\n🔹 Countries of the 🇪🇺 include 🅰, sorted 📉: \n', sortedArray);
-      limitedSortedArray = sortedArray.slice(0, 5);
-      populateOfLimitedArray = exports.calculateSum5MostPopulateCountries(limitedSortedArray);
+      enterAcronym = 'eu'.toUpperCase();
+      arrayWithEUCountries = exports.getAllCountriesByAcronym(localStorageCountriesData, enterAcronym);
+      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ": \n", arrayWithEUCountries);
+      enterLetter = 'a';
+      arrayOfEUCountriesIncludesA = exports.selectCountriesIncludesAnyLetter(arrayWithEUCountries, enterLetter);
+      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "':\n", arrayOfEUCountriesIncludesA);
+      sortType = 'desc';
+      sortedArray = exports.sortByPopulation(arrayOfEUCountriesIncludesA, sortType);
+      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + ": \n", sortedArray);
+      enterLimit = 5;
+      populateOfLimitedArray = exports.calculateSumPopulateCountries(sortedArray, enterLimit);
       isBigger = populateOfLimitedArray > 500000000 ? '↗️ bigger' : '↘️ less';
-      console.log('\n🔹 Countries of the 🇪🇺 include 🅰, sorted 📉 and calculate population ➕: \n\n   Population 5 most populous countries is equal:', populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
+      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + " and calculate population \u2795: \n\n   Population 5 most populous countries is equal:", populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
       return [2
       /*return*/
       ];
@@ -708,50 +711,53 @@ var Task2 = function Task2() {
 
 exports.Task2 = Task2;
 
-var getAllEUCountries = function getAllEUCountries(countries) {
-  var arrayOfEUCountries = countries.filter(function (country) {
+var getAllCountriesByAcronym = function getAllCountriesByAcronym(countries, acronym) {
+  return countries.filter(function (country) {
     var _a;
 
     return (_a = country.regionalBlocs) === null || _a === void 0 ? void 0 : _a.some(function (c) {
-      return c.acronym === 'EU';
+      return c.acronym === acronym;
     });
   });
-  return arrayOfEUCountries;
 };
 
-exports.getAllEUCountries = getAllEUCountries;
+exports.getAllCountriesByAcronym = getAllCountriesByAcronym;
 
-var selectCountriesIncludesA = function selectCountriesIncludesA(countries) {
-  var arrayCountriesIncludeA = countries.filter(function (country) {
-    return country.name.includes('a');
+var selectCountriesIncludesAnyLetter = function selectCountriesIncludesAnyLetter(countries, letter) {
+  return countries.filter(function (country) {
+    return country.name.includes(letter);
   });
-  return arrayCountriesIncludeA;
 };
 
-exports.selectCountriesIncludesA = selectCountriesIncludesA;
+exports.selectCountriesIncludesAnyLetter = selectCountriesIncludesAnyLetter;
 
-var sortByPopulationDesc = function sortByPopulationDesc(array) {
+var sortByPopulation = function sortByPopulation(array, sortType) {
   var sortArrayDesc = function sortArrayDesc(first, next) {
     return next.population - first.population;
   };
 
+  var sortArrayAsc = function sortArrayAsc(first, next) {
+    return first.population - next.population;
+  };
+
   var sortArray = __spreadArray([], array);
 
-  sortArray.sort(sortArrayDesc);
+  sortType === 'desc' ? sortArray.sort(sortArrayDesc) : sortArray.sort(sortArrayAsc);
   return sortArray;
 };
 
-exports.sortByPopulationDesc = sortByPopulationDesc;
+exports.sortByPopulation = sortByPopulation;
 
-var calculateSum5MostPopulateCountries = function calculateSum5MostPopulateCountries(array) {
+var calculateSumPopulateCountries = function calculateSumPopulateCountries(array, limit) {
+  var limitedArray = array.slice(0, limit);
   var populate = 0;
-  array.forEach(function (country) {
+  limitedArray.forEach(function (country) {
     populate += country.population;
   });
   return populate;
 };
 
-exports.calculateSum5MostPopulateCountries = calculateSum5MostPopulateCountries;
+exports.calculateSumPopulateCountries = calculateSumPopulateCountries;
 },{}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -800,7 +806,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53001" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51295" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

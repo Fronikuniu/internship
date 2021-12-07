@@ -1,4 +1,5 @@
 import { CountriesData } from '../helpers/Requests';
+import { localStorageCountriesData } from '..';
 import { Country } from '../types/interfaces';
 
 export const Task1 = async () => {
@@ -6,9 +7,6 @@ export const Task1 = async () => {
     countriesKey: 'allCountries',
     dateKey: 'dateWhenSaved',
   };
-
-  const localStorageSavedData: string | null = localStorage.getItem(configuration.countriesKey);
-  const localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
 
   const currentDate = Date.now();
   const msOf7Days = 604_800_000;
@@ -24,7 +22,8 @@ export const Task1 = async () => {
     localStorage.setItem(configuration.countriesKey, JSON.stringify(countries));
     localStorage.setItem(configuration.dateKey, currentDate.toString());
 
-    console.log('\n📝 Data saved in localStorage.');
+    console.log('📝 Data saved in localStorage.');
+    console.log('📢 Refresh page!');
   } else {
     const dateFromLocalStorage: string | null = localStorage.getItem(configuration.dateKey);
     const lastSaveDate: string | number = typeof dateFromLocalStorage === 'string' ? parseInt(dateFromLocalStorage) : currentDate;

@@ -444,9 +444,11 @@ exports.compareData = exports.Task1 = void 0;
 
 var Requests_1 = require("../helpers/Requests");
 
+var __1 = require("..");
+
 var Task1 = function Task1() {
   return __awaiter(void 0, void 0, void 0, function () {
-    var configuration, localStorageSavedData, localStorageCountriesData, currentDate, msOf7Days, countries, dateFromLocalStorage, lastSaveDate, numericDateFromLocalStorage, localStorageData, currDate, nextUpdate, oldData, newData;
+    var configuration, currentDate, msOf7Days, countries, dateFromLocalStorage, lastSaveDate, numericDateFromLocalStorage, localStorageData, currDate, nextUpdate, oldData, newData;
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
@@ -454,11 +456,9 @@ var Task1 = function Task1() {
             countriesKey: 'allCountries',
             dateKey: 'dateWhenSaved'
           };
-          localStorageSavedData = localStorage.getItem(configuration.countriesKey);
-          localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
           currentDate = Date.now();
           msOf7Days = 604800000;
-          if (!!localStorageCountriesData) return [3
+          if (!!__1.localStorageCountriesData) return [3
           /*break*/
           , 2];
           console.log('❗ Data does not exist ❗');
@@ -471,7 +471,8 @@ var Task1 = function Task1() {
 
           localStorage.setItem(configuration.countriesKey, JSON.stringify(countries));
           localStorage.setItem(configuration.dateKey, currentDate.toString());
-          console.log('\n📝 Data saved in localStorage.');
+          console.log('📝 Data saved in localStorage.');
+          console.log('📢 Refresh page!');
           return [3
           /*break*/
           , 4];
@@ -480,7 +481,7 @@ var Task1 = function Task1() {
           dateFromLocalStorage = localStorage.getItem(configuration.dateKey);
           lastSaveDate = typeof dateFromLocalStorage === 'string' ? parseInt(dateFromLocalStorage) : currentDate;
           numericDateFromLocalStorage = lastSaveDate;
-          localStorageData = localStorageCountriesData;
+          localStorageData = __1.localStorageCountriesData;
           currDate = currentDate;
           nextUpdate = numericDateFromLocalStorage + msOf7Days;
           console.log('✔️ Data exist in localStorage ✔️');
@@ -524,7 +525,7 @@ var compareData = function compareData(oldest, newest) {
 };
 
 exports.compareData = compareData;
-},{"../helpers/Requests":"src/helpers/Requests.ts"}],"src/task2/Task2.ts":[function(require,module,exports) {
+},{"../helpers/Requests":"src/helpers/Requests.ts","..":"src/index.ts"}],"src/task2/Task2.ts":[function(require,module,exports) {
 "use strict";
 
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
@@ -683,14 +684,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.calculateSumPopulateCountries = exports.sortByPopulation = exports.selectCountriesIncludesAnyLetter = exports.getAllCountriesByAcronym = exports.Task2 = void 0;
 
+var __1 = require("..");
+
 var Task2 = function Task2() {
   return __awaiter(void 0, void 0, void 0, function () {
-    var localStorageSavedData, localStorageCountriesData, enterAcronym, arrayWithEUCountries, enterLetter, arrayOfEUCountriesIncludesA, sortType, sortedArray, enterLimit, populateOfLimitedArray, isBigger;
+    var enterAcronym, arrayWithEUCountries, enterLetter, arrayOfEUCountriesIncludesA, sortType, sortedArray, enterLimit, populateOfLimitedArray, isBigger;
     return __generator(this, function (_a) {
-      localStorageSavedData = localStorage.getItem('allCountries');
-      localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
       enterAcronym = 'eu'.toUpperCase();
-      arrayWithEUCountries = exports.getAllCountriesByAcronym(localStorageCountriesData, enterAcronym);
+      arrayWithEUCountries = exports.getAllCountriesByAcronym(__1.localStorageCountriesData, enterAcronym);
       console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ": \n", arrayWithEUCountries);
       enterLetter = 'a';
       arrayOfEUCountriesIncludesA = exports.selectCountriesIncludesAnyLetter(arrayWithEUCountries, enterLetter);
@@ -698,10 +699,10 @@ var Task2 = function Task2() {
       sortType = 'desc';
       sortedArray = exports.sortByPopulation(arrayOfEUCountriesIncludesA, sortType);
       console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + ": \n", sortedArray);
-      enterLimit = 5;
+      enterLimit = 3;
       populateOfLimitedArray = exports.calculateSumPopulateCountries(sortedArray, enterLimit);
       isBigger = populateOfLimitedArray > 500000000 ? '↗️ bigger' : '↘️ less';
-      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + " and calculate population \u2795: \n\n   Population " + enterLimit + " most populous countries is equal:", populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
+      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + " and calculate population \u2795: \n\n   Population " + enterLimit + " countries is equal:", populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
       return [2
       /*return*/
       ];
@@ -758,27 +759,131 @@ var calculateSumPopulateCountries = function calculateSumPopulateCountries(array
 };
 
 exports.calculateSumPopulateCountries = calculateSumPopulateCountries;
-},{}],"src/index.ts":[function(require,module,exports) {
+},{"..":"src/index.ts"}],"src/task3/Task3.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Task3 = void 0;
+
+var Task2_1 = require("../task2/Task2");
+
+var __1 = require("..");
+
+var Task3 = function Task3() {
+  var acronyms = {
+    EU: {
+      countries: [],
+      population: 0,
+      languages: {},
+      currencies: []
+    },
+    NAFTA: {
+      countries: [],
+      population: 0,
+      languages: {},
+      currencies: []
+    },
+    AU: {
+      countries: [],
+      population: 0,
+      languages: {},
+      currencies: []
+    },
+    other: {
+      countries: [],
+      population: 0,
+      languages: {},
+      currencies: []
+    }
+  };
+  var euCountries = Task2_1.getAllCountriesByAcronym(__1.localStorageCountriesData, 'EU');
+  var naftaCountries = Task2_1.getAllCountriesByAcronym(__1.localStorageCountriesData, 'NAFTA');
+  var auCountries = Task2_1.getAllCountriesByAcronym(__1.localStorageCountriesData, 'AU');
+  var langObject = {
+    iso639_1: {
+      countries: ['alpha3Code'],
+      population: 0,
+      area: 0,
+      name: 'nativeName'
+    }
+  };
+  euCountries.forEach(function (country) {
+    acronyms.EU.countries.push(country.name);
+    country.currencies.every(function (currencie) {
+      return acronyms.EU.currencies.push(currencie.name);
+    });
+    acronyms.EU.population += country.population;
+  });
+  naftaCountries.forEach(function (country) {
+    acronyms.NAFTA.countries.push(country.name);
+    country.currencies.every(function (currencie) {
+      return acronyms.NAFTA.currencies.push(currencie.name);
+    });
+    acronyms.NAFTA.population += country.population;
+  });
+  auCountries.forEach(function (country) {
+    acronyms.AU.countries.push(country.name);
+    country.currencies.every(function (currencie) {
+      return acronyms.AU.currencies.push(currencie.name);
+    });
+    acronyms.AU.population += country.population;
+  });
+  console.log(acronyms);
+};
+
+exports.Task3 = Task3; //✔ * Stwórz nowy obiekt. Powinien on posiadać klucze EU, NAFTA, AU oraz other. Każdy z tych kluczy będzie zawierał obiekt o kluczach countries, population, languages oraz currencies.
+//   Wartościami countries oraz currencies są puste tablice, wartość population wynosi 0. Wartość languages to pusty obiekt.
+//✔ * W TP znajdź kraje należące do EU, NAFTA albo AU. Jeśli państwo należy do którejś z tych grup, umieść jego dane w stosownym obiekcie: natywną nazwę w tablicy countries, używane przez nią
+//   waluty w tablicy currencies oraz dodaj jej populację do wartości population.
+//? * Sprawdź języki przypisane do kraju. Użyj ich kodu iso639_1 jako klucza dla obiektu languages. Jeśli danego języka nie ma w obiekcie languages, przypisz do niego nowy obiekt o kluczach
+//   countries(wartość początkowa: pusta arajka), population(0), area(0) oraz name(pusty string). Jeśli dany język znajduje się w obiekcie languages, dodaj do tablicy countries kod alpha3code
+//   kraju, w którym jest używany, populację tego kraju do wartości population, obszar kraju do wartości area, a do name przypisz natywną nazwę tego języka.
+// * Jeśli kraj nie należy do żadnej z podanych wcześniej organizacji wykonaj kroki z poprzednich dwóch punktów, ale dane umieść w tablicy other.
+// * Jeśli kraj należy do więcej, niż jednej organizacji, umieść jego dane we wszystkich pasujących obiektach bloków. Blok other może się powtarzać.
+// * Dla każdej organizacji dane w tablicy currencies nie mogą się powtarzać.
+// * Dla każdej organizacji dane w tablicy countries powinny być posortowane alfabetycznie z do a.
+// * Wyświetl w konsoli:
+//  - Nazwę organizacji o największej populacji,
+//  - Nazwę organizacji o drugiej największej gęstości zaludnienia,
+//  - Nazwę organizacji zajmującej trzeci największy obszar,
+//  - Nazwy organizacji o największej i najmniejszej przypisanej do nich liczbie języków,
+//  - Nazwę organizacji wykorzystującej największą liczbę walut,
+//  - Nazwę organizacji posiadającej najmniejszą liczbę państw członkowskich,
+//  - Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
+//  - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
+//  - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
+// * W przypadku remisów wyświetl wszystkich zwycięzców.
+},{"../task2/Task2":"src/task2/Task2.ts","..":"src/index.ts"}],"src/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.localStorageCountriesData = void 0;
 
 var Task1_1 = require("./task1/Task1");
 
 var Task2_1 = require("./task2/Task2");
+
+var Task3_1 = require("./task3/Task3");
+
+var localStorageSavedData = localStorage.getItem('allCountries');
+exports.localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
 
 window.onload = function () {
   console.log('╔═══════════════╗\n║    Task 1     ║\n╚═══════════════╝');
   Task1_1.Task1();
   console.log('╔═══════════════╗\n║    Task 2     ║\n╚═══════════════╝');
   Task2_1.Task2();
+  console.log('╔═══════════════╗\n║    Task 3     ║\n╚═══════════════╝');
+  Task3_1.Task3();
   console.log('╔═══════════════╗\n║     Logs      ║\n╚═══════════════╝');
 };
 
 console.log();
-},{"./task1/Task1":"src/task1/Task1.ts","./task2/Task2":"src/task2/Task2.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./task1/Task1":"src/task1/Task1.ts","./task2/Task2":"src/task2/Task2.ts","./task3/Task3":"src/task3/Task3.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

@@ -29,3 +29,21 @@ export interface Country<> {
 type translation = {
   [key: string]: string;
 };
+
+export type acronyms = {
+  [key: string]: {
+    countries: string[];
+    population: number;
+    languages: languages;
+    currencies: string[];
+  };
+};
+
+type languages = {
+  [key: string]: {
+    countries: string[];
+    population: number;
+    area: number;
+    name: string[];
+  };
+};

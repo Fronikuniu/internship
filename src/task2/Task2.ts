@@ -1,16 +1,14 @@
+import { localStorageCountriesData } from '..';
 import { Country } from '../types/interfaces';
 
 export const Task2 = async () => {
-  const localStorageSavedData: string | null = localStorage.getItem('allCountries');
-  const localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
-
   // Select all EU countries
-  const enterAcronym = 'eu'.toUpperCase();
+  const enterAcronym: string = 'eu'.toUpperCase();
   const arrayWithEUCountries: Country[] | string = getAllCountriesByAcronym(localStorageCountriesData, enterAcronym);
   console.log(`\n🔹 Countries of the ${enterAcronym}: \n`, arrayWithEUCountries);
 
   // From all EU countries take countries which include any letter
-  const enterLetter = 'a';
+  const enterLetter: string = 'a';
   const arrayOfEUCountriesIncludesA: Country[] | string = selectCountriesIncludesAnyLetter(arrayWithEUCountries, enterLetter);
   console.log(`\n🔹 Countries of the ${enterAcronym}, include '${enterLetter.toUpperCase()}':\n`, arrayOfEUCountriesIncludesA);
 
@@ -20,11 +18,11 @@ export const Task2 = async () => {
   console.log(`\n🔹 Countries of the ${enterAcronym}, include '${enterLetter.toUpperCase()}', sorted ${sortType.toUpperCase()}: \n`, sortedArray);
 
   // From all EU countries take countries which include 'a', sort descending and calculate the population sum
-  const enterLimit: number = 5;
+  const enterLimit: number = 3;
   const populateOfLimitedArray = calculateSumPopulateCountries(sortedArray, enterLimit);
   const isBigger = populateOfLimitedArray > 500_000_000 ? '↗️ bigger' : '↘️ less';
   console.log(
-    `\n🔹 Countries of the ${enterAcronym}, include '${enterLetter.toUpperCase()}', sorted ${sortType.toUpperCase()} and calculate population ➕: \n\n   Population ${enterLimit} most populous countries is equal:`,
+    `\n🔹 Countries of the ${enterAcronym}, include '${enterLetter.toUpperCase()}', sorted ${sortType.toUpperCase()} and calculate population ➕: \n\n   Population ${enterLimit} countries is equal:`,
     populateOfLimitedArray,
     `And it's ${isBigger} than 500 million.`
   );

@@ -701,7 +701,7 @@ var Task2 = function Task2() {
       enterLimit = 5;
       populateOfLimitedArray = exports.calculateSumPopulateCountries(sortedArray, enterLimit);
       isBigger = populateOfLimitedArray > 500000000 ? '↗️ bigger' : '↘️ less';
-      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + " and calculate population \u2795: \n\n   Population 5 most populous countries is equal:", populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
+      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + " and calculate population \u2795: \n\n   Population " + enterLimit + " most populous countries is equal:", populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
       return [2
       /*return*/
       ];

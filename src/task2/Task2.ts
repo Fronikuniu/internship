@@ -24,7 +24,7 @@ export const Task2 = async () => {
   const populateOfLimitedArray = calculateSumPopulateCountries(sortedArray, enterLimit);
   const isBigger = populateOfLimitedArray > 500_000_000 ? '↗️ bigger' : '↘️ less';
   console.log(
-    `\n🔹 Countries of the ${enterAcronym}, include '${enterLetter.toUpperCase()}', sorted ${sortType.toUpperCase()} and calculate population ➕: \n\n   Population 5 most populous countries is equal:`,
+    `\n🔹 Countries of the ${enterAcronym}, include '${enterLetter.toUpperCase()}', sorted ${sortType.toUpperCase()} and calculate population ➕: \n\n   Population ${enterLimit} most populous countries is equal:`,
     populateOfLimitedArray,
     `And it's ${isBigger} than 500 million.`
   );

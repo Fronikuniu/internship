@@ -117,7 +117,18 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/helpers/Requests.ts":[function(require,module,exports) {
+})({"src/config.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.configuration = void 0;
+exports.configuration = {
+  countriesKey: 'allCountries',
+  dateKey: 'dateWhenSaved'
+};
+},{}],"src/requests.ts":[function(require,module,exports) {
 "use strict";
 
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
@@ -266,9 +277,9 @@ var __generator = this && this.__generator || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CountriesData = void 0;
+exports.getCountriesData = void 0;
 
-var CountriesData = function CountriesData() {
+var getCountriesData = function getCountriesData() {
   return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
       switch (_a.label) {
@@ -290,7 +301,7 @@ var CountriesData = function CountriesData() {
   });
 };
 
-exports.CountriesData = CountriesData;
+exports.getCountriesData = getCountriesData;
 },{}],"src/task1/Task1.ts":[function(require,module,exports) {
 "use strict";
 
@@ -442,35 +453,31 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.compareData = exports.Task1 = void 0;
 
-var Requests_1 = require("../helpers/Requests");
+var config_1 = require("../config");
 
-var __1 = require("..");
+var requests_1 = require("../requests");
 
-var Task1 = function Task1() {
+var Task1 = function Task1(localStorageCountriesData) {
   return __awaiter(void 0, void 0, void 0, function () {
-    var configuration, currentDate, msOf7Days, countries, dateFromLocalStorage, lastSaveDate, numericDateFromLocalStorage, localStorageData, currDate, nextUpdate, oldData, newData;
+    var currentDate, msOf7Days, countries, dateFromLocalStorage, lastSaveDate, numericDateFromLocalStorage, localStorageData, currDate, nextUpdate, oldData, newData;
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
-          configuration = {
-            countriesKey: 'allCountries',
-            dateKey: 'dateWhenSaved'
-          };
           currentDate = Date.now();
           msOf7Days = 604800000;
-          if (!!__1.localStorageCountriesData) return [3
+          if (!!localStorageCountriesData) return [3
           /*break*/
           , 2];
           console.log('❗ Data does not exist ❗');
           return [4
           /*yield*/
-          , Requests_1.CountriesData()];
+          , requests_1.getCountriesData()];
 
         case 1:
           countries = _a.sent(); // Save countries data to LocalStorage, save
 
-          localStorage.setItem(configuration.countriesKey, JSON.stringify(countries));
-          localStorage.setItem(configuration.dateKey, currentDate.toString());
+          localStorage.setItem(config_1.configuration.countriesKey, JSON.stringify(countries));
+          localStorage.setItem(config_1.configuration.dateKey, currentDate.toString());
           console.log('📝 Data saved in localStorage.');
           console.log('📢 Refresh page!');
           return [3
@@ -478,10 +485,10 @@ var Task1 = function Task1() {
           , 4];
 
         case 2:
-          dateFromLocalStorage = localStorage.getItem(configuration.dateKey);
+          dateFromLocalStorage = localStorage.getItem(config_1.configuration.dateKey);
           lastSaveDate = typeof dateFromLocalStorage === 'string' ? parseInt(dateFromLocalStorage) : currentDate;
           numericDateFromLocalStorage = lastSaveDate;
-          localStorageData = __1.localStorageCountriesData;
+          localStorageData = localStorageCountriesData;
           currDate = currentDate;
           nextUpdate = numericDateFromLocalStorage + msOf7Days;
           console.log('✔️ Data exist in localStorage ✔️');
@@ -494,13 +501,13 @@ var Task1 = function Task1() {
           oldData = localStorageData;
           return [4
           /*yield*/
-          , Requests_1.CountriesData()];
+          , requests_1.getCountriesData()];
 
         case 3:
           newData = _a.sent();
           console.log('🟨 Changed data is in:\n', exports.compareData(oldData, newData));
-          localStorage.setItem(configuration.countriesKey, JSON.stringify(newData));
-          localStorage.setItem(configuration.dateKey, currentDate.toString());
+          localStorage.setItem(config_1.configuration.countriesKey, JSON.stringify(newData));
+          localStorage.setItem(config_1.configuration.dateKey, currentDate.toString());
           _a.label = 4;
 
         case 4:
@@ -525,7 +532,7 @@ var compareData = function compareData(oldest, newest) {
 };
 
 exports.compareData = compareData;
-},{"../helpers/Requests":"src/helpers/Requests.ts","..":"src/index.ts"}],"src/task2/Task2.ts":[function(require,module,exports) {
+},{"../config":"src/config.ts","../requests":"src/requests.ts"}],"src/task2/Task2.ts":[function(require,module,exports) {
 "use strict";
 
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
@@ -682,27 +689,30 @@ var __spreadArray = this && this.__spreadArray || function (to, from) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.calculateSumPopulateCountries = exports.sortByPopulation = exports.selectCountriesIncludesAnyLetter = exports.getAllCountriesByAcronym = exports.Task2 = void 0;
+exports.calculateSumCountriesByType = exports.sortCountriesByType = exports.selectCountriesIncludesAnyLetter = exports.getAllCountriesByTypeAndValue = exports.Task2 = void 0;
 
-var __1 = require("..");
-
-var Task2 = function Task2() {
+var Task2 = function Task2(localStorageCountriesData) {
   return __awaiter(void 0, void 0, void 0, function () {
-    var enterAcronym, arrayWithEUCountries, enterLetter, arrayOfEUCountriesIncludesA, sortType, sortedArray, enterLimit, populateOfLimitedArray, isBigger;
+    var enterCountryValuePathToSearchFor, enterCountryValueToSearchFor, whetherToContain, arrayOfCountries, enterPhrasePathToSearchFor, enterPhraseToSearchFor, arrayOfCountriesContainingPhrase, enterSortPathToSearchFor, enterSortToSearchFor, arrayOfSortedCountries, enterLimit, enterTypeLimit, populateOfLimitedArray, isBigger;
     return __generator(this, function (_a) {
-      enterAcronym = 'eu'.toUpperCase();
-      arrayWithEUCountries = exports.getAllCountriesByAcronym(__1.localStorageCountriesData, enterAcronym);
-      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ": \n", arrayWithEUCountries);
-      enterLetter = 'a';
-      arrayOfEUCountriesIncludesA = exports.selectCountriesIncludesAnyLetter(arrayWithEUCountries, enterLetter);
-      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "':\n", arrayOfEUCountriesIncludesA);
-      sortType = 'desc';
-      sortedArray = exports.sortByPopulation(arrayOfEUCountriesIncludesA, sortType);
-      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + ": \n", sortedArray);
-      enterLimit = 3;
-      populateOfLimitedArray = exports.calculateSumPopulateCountries(sortedArray, enterLimit);
+      enterCountryValuePathToSearchFor = 'regionalBlocs acronym';
+      enterCountryValueToSearchFor = 'EU';
+      whetherToContain = true;
+      arrayOfCountries = exports.getAllCountriesByTypeAndValue(localStorageCountriesData, enterCountryValuePathToSearchFor, enterCountryValueToSearchFor, whetherToContain);
+      console.log("\n\uD83D\uDD39 Countries of the " + enterCountryValueToSearchFor + ": \n", arrayOfCountries);
+      enterPhrasePathToSearchFor = 'name';
+      enterPhraseToSearchFor = 'a';
+      arrayOfCountriesContainingPhrase = exports.selectCountriesIncludesAnyLetter(arrayOfCountries, enterPhrasePathToSearchFor, enterPhraseToSearchFor);
+      console.log("\n\uD83D\uDD39 Countries of the " + enterCountryValueToSearchFor + ", include '" + enterPhraseToSearchFor.toUpperCase() + "':\n", arrayOfCountriesContainingPhrase);
+      enterSortPathToSearchFor = 'population';
+      enterSortToSearchFor = 'desc';
+      arrayOfSortedCountries = exports.sortCountriesByType(arrayOfCountriesContainingPhrase, enterSortPathToSearchFor, enterSortToSearchFor);
+      console.log("\n\uD83D\uDD39 Countries of the " + enterCountryValueToSearchFor + ", include '" + enterPhraseToSearchFor.toUpperCase() + "', sorted " + enterSortToSearchFor.toUpperCase() + ": \n", arrayOfSortedCountries);
+      enterLimit = 5;
+      enterTypeLimit = 'population';
+      populateOfLimitedArray = exports.calculateSumCountriesByType(arrayOfSortedCountries, enterTypeLimit, enterLimit);
       isBigger = populateOfLimitedArray > 500000000 ? '↗️ bigger' : '↘️ less';
-      console.log("\n\uD83D\uDD39 Countries of the " + enterAcronym + ", include '" + enterLetter.toUpperCase() + "', sorted " + sortType.toUpperCase() + " and calculate population \u2795: \n\n   Population " + enterLimit + " countries is equal:", populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
+      console.log("\n\uD83D\uDD39 Countries of the " + enterCountryValueToSearchFor + ", include '" + enterPhraseToSearchFor.toUpperCase() + "', sorted " + enterSortToSearchFor.toUpperCase() + " and calculate population \u2795: \n\n   Population " + enterLimit + " countries is equal:", populateOfLimitedArray, "And it's " + isBigger + " than 500 million.");
       return [2
       /*return*/
       ];
@@ -710,56 +720,85 @@ var Task2 = function Task2() {
   });
 };
 
-exports.Task2 = Task2;
+exports.Task2 = Task2; // Need add types instead ': any' bc i change to ': any' from ': Country[]'
+// In countries i need add something like [type: string]: ?? but i dont know how to do it
 
-var getAllCountriesByAcronym = function getAllCountriesByAcronym(countries, acronym) {
+var getAllCountriesByTypeAndValue = function getAllCountriesByTypeAndValue(countries, types, values, containingOrNot) {
+  var typesData = types.split(' ');
+  var valuesData = values.split(' ');
   return countries.filter(function (country) {
-    var _a;
+    var _a, _b, _c, _d;
 
-    return (_a = country.regionalBlocs) === null || _a === void 0 ? void 0 : _a.some(function (c) {
-      return c.acronym === acronym;
-    });
+    if (containingOrNot) {
+      if (typesData.length === 1) {
+        return (_a = country[typesData[0]]) === null || _a === void 0 ? void 0 : _a.includes(valuesData[0] || valuesData[1] || valuesData[2]);
+      } else {
+        return (_b = country[typesData[0]]) === null || _b === void 0 ? void 0 : _b.some(function (c) {
+          if (valuesData.length === 1) {
+            return c[typesData[1]] === valuesData[0];
+          } else if (valuesData.length === 2) {
+            return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1];
+          } else if (valuesData.length === 3) {
+            return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1] || c[typesData[1]] === valuesData[2];
+          }
+        });
+      }
+    } else {
+      if (typesData.length === 1) {
+        return !((_c = country[typesData[0]]) === null || _c === void 0 ? void 0 : _c.includes(valuesData[0] || valuesData[1] || valuesData[2]));
+      } else {
+        return (_d = country[typesData[0]]) === null || _d === void 0 ? void 0 : _d.some(function (c) {
+          if (valuesData.length === 1) {
+            return c[typesData[1]] !== valuesData[0];
+          } else if (valuesData.length === 2) {
+            return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1];
+          } else if (valuesData.length === 3) {
+            return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1] || c[typesData[1]] !== valuesData[2];
+          }
+        });
+      }
+    }
   });
 };
 
-exports.getAllCountriesByAcronym = getAllCountriesByAcronym;
+exports.getAllCountriesByTypeAndValue = getAllCountriesByTypeAndValue;
 
-var selectCountriesIncludesAnyLetter = function selectCountriesIncludesAnyLetter(countries, letter) {
+var selectCountriesIncludesAnyLetter = function selectCountriesIncludesAnyLetter(countries, type, value) {
   return countries.filter(function (country) {
-    return country.name.includes(letter);
+    return country[type].includes(value.toUpperCase()) || country[type].includes(value.toLowerCase());
   });
 };
 
 exports.selectCountriesIncludesAnyLetter = selectCountriesIncludesAnyLetter;
 
-var sortByPopulation = function sortByPopulation(array, sortType) {
+var sortCountriesByType = function sortCountriesByType(array, type, enterSortType) {
   var sortArrayDesc = function sortArrayDesc(first, next) {
-    return next.population - first.population;
+    return next[type] - first[type];
   };
 
   var sortArrayAsc = function sortArrayAsc(first, next) {
-    return first.population - next.population;
+    return first[type] - next[type];
   };
 
   var sortArray = __spreadArray([], array);
 
-  sortType === 'desc' ? sortArray.sort(sortArrayDesc) : sortArray.sort(sortArrayAsc);
+  enterSortType === 'desc' ? sortArray.sort(sortArrayDesc) : sortArray.sort(sortArrayAsc);
   return sortArray;
 };
 
-exports.sortByPopulation = sortByPopulation;
+exports.sortCountriesByType = sortCountriesByType;
 
-var calculateSumPopulateCountries = function calculateSumPopulateCountries(array, limit) {
-  var limitedArray = array.slice(0, limit);
+var calculateSumCountriesByType = function calculateSumCountriesByType(countries, type, limit) {
+  var limitedArray = countries.slice(0, limit);
   var populate = 0;
   limitedArray.forEach(function (country) {
-    populate += country.population;
+    populate += country[type];
   });
   return populate;
 };
 
-exports.calculateSumPopulateCountries = calculateSumPopulateCountries;
-},{"..":"src/index.ts"}],"src/task3/Task3.ts":[function(require,module,exports) {
+exports.calculateSumCountriesByType = calculateSumCountriesByType;
+},{}],"src/task3/Task3.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -769,9 +808,7 @@ exports.Task3 = void 0;
 
 var Task2_1 = require("../task2/Task2");
 
-var __1 = require("..");
-
-var Task3 = function Task3() {
+var Task3 = function Task3(localStorageCountriesData) {
   var acronyms = {
     EU: {
       countries: [],
@@ -798,9 +835,10 @@ var Task3 = function Task3() {
       currencies: []
     }
   };
-  var euCountries = Task2_1.getAllCountriesByAcronym(__1.localStorageCountriesData, 'EU');
-  var naftaCountries = Task2_1.getAllCountriesByAcronym(__1.localStorageCountriesData, 'NAFTA');
-  var auCountries = Task2_1.getAllCountriesByAcronym(__1.localStorageCountriesData, 'AU');
+  var euCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'EU', true);
+  var naftaCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'NAFTA', true);
+  var auCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'AU', true);
+  var countriesWithoutEuNaftaAu = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'EU NAFTA AU', false);
   var langObject = {
     iso639_1: {
       countries: ['alpha3Code'],
@@ -810,27 +848,41 @@ var Task3 = function Task3() {
     }
   };
   euCountries.forEach(function (country) {
-    acronyms.EU.countries.push(country.name);
+    acronyms.EU.countries.push(country.nativeName);
     country.currencies.every(function (currencie) {
       return acronyms.EU.currencies.push(currencie.name);
     });
     acronyms.EU.population += country.population;
   });
   naftaCountries.forEach(function (country) {
-    acronyms.NAFTA.countries.push(country.name);
+    acronyms.NAFTA.countries.push(country.nativeName);
     country.currencies.every(function (currencie) {
       return acronyms.NAFTA.currencies.push(currencie.name);
     });
     acronyms.NAFTA.population += country.population;
   });
   auCountries.forEach(function (country) {
-    acronyms.AU.countries.push(country.name);
+    acronyms.AU.countries.push(country.nativeName);
     country.currencies.every(function (currencie) {
       return acronyms.AU.currencies.push(currencie.name);
     });
     acronyms.AU.population += country.population;
   });
-  console.log(acronyms);
+  countriesWithoutEuNaftaAu.forEach(function (country) {
+    var _a;
+
+    acronyms.other.countries.push(country.nativeName);
+    (_a = country.currencies) === null || _a === void 0 ? void 0 : _a.every(function (currencie) {
+      return acronyms.other.currencies.push(currencie.name);
+    });
+    acronyms.other.population += country.population;
+  });
+  var keys = Object.keys(acronyms);
+  keys.forEach(function (key) {
+    acronyms[key].currencies = new Set(acronyms[key].currencies);
+    acronyms[key].countries = acronyms[key].countries.sort().reverse();
+  });
+  console.log('\n🔸 EU, NAFTA, AU and other countries: \n', acronyms);
 };
 
 exports.Task3 = Task3; //✔ * Stwórz nowy obiekt. Powinien on posiadać klucze EU, NAFTA, AU oraz other. Każdy z tych kluczy będzie zawierał obiekt o kluczach countries, population, languages oraz currencies.
@@ -840,10 +892,10 @@ exports.Task3 = Task3; //✔ * Stwórz nowy obiekt. Powinien on posiadać klucze
 //? * Sprawdź języki przypisane do kraju. Użyj ich kodu iso639_1 jako klucza dla obiektu languages. Jeśli danego języka nie ma w obiekcie languages, przypisz do niego nowy obiekt o kluczach
 //   countries(wartość początkowa: pusta arajka), population(0), area(0) oraz name(pusty string). Jeśli dany język znajduje się w obiekcie languages, dodaj do tablicy countries kod alpha3code
 //   kraju, w którym jest używany, populację tego kraju do wartości population, obszar kraju do wartości area, a do name przypisz natywną nazwę tego języka.
-// * Jeśli kraj nie należy do żadnej z podanych wcześniej organizacji wykonaj kroki z poprzednich dwóch punktów, ale dane umieść w tablicy other.
+//-✔ * Jeśli kraj nie należy do żadnej z podanych wcześniej organizacji wykonaj kroki z poprzednich dwóch punktów, ale dane umieść w tablicy other.
 // * Jeśli kraj należy do więcej, niż jednej organizacji, umieść jego dane we wszystkich pasujących obiektach bloków. Blok other może się powtarzać.
-// * Dla każdej organizacji dane w tablicy currencies nie mogą się powtarzać.
-// * Dla każdej organizacji dane w tablicy countries powinny być posortowane alfabetycznie z do a.
+//✔ * Dla każdej organizacji dane w tablicy currencies nie mogą się powtarzać.
+//✔ * Dla każdej organizacji dane w tablicy countries powinny być posortowane alfabetycznie z do a.
 // * Wyświetl w konsoli:
 //  - Nazwę organizacji o największej populacji,
 //  - Nazwę organizacji o drugiej największej gęstości zaludnienia,
@@ -855,13 +907,14 @@ exports.Task3 = Task3; //✔ * Stwórz nowy obiekt. Powinien on posiadać klucze
 //  - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
 //  - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
 // * W przypadku remisów wyświetl wszystkich zwycięzców.
-},{"../task2/Task2":"src/task2/Task2.ts","..":"src/index.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"../task2/Task2":"src/task2/Task2.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.localStorageCountriesData = void 0;
+
+var config_1 = require("./config");
 
 var Task1_1 = require("./task1/Task1");
 
@@ -869,21 +922,18 @@ var Task2_1 = require("./task2/Task2");
 
 var Task3_1 = require("./task3/Task3");
 
-var localStorageSavedData = localStorage.getItem('allCountries');
-exports.localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
-
 window.onload = function () {
+  var localStorageSavedData = localStorage.getItem(config_1.configuration.countriesKey);
+  var localStorageCountriesData = typeof localStorageSavedData === 'string' && JSON.parse(localStorageSavedData);
   console.log('╔═══════════════╗\n║    Task 1     ║\n╚═══════════════╝');
-  Task1_1.Task1();
+  Task1_1.Task1(localStorageCountriesData);
   console.log('╔═══════════════╗\n║    Task 2     ║\n╚═══════════════╝');
-  Task2_1.Task2();
+  Task2_1.Task2(localStorageCountriesData);
   console.log('╔═══════════════╗\n║    Task 3     ║\n╚═══════════════╝');
-  Task3_1.Task3();
+  Task3_1.Task3(localStorageCountriesData);
   console.log('╔═══════════════╗\n║     Logs      ║\n╚═══════════════╝');
 };
-
-console.log();
-},{"./task1/Task1":"src/task1/Task1.ts","./task2/Task2":"src/task2/Task2.ts","./task3/Task3":"src/task3/Task3.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./config":"src/config.ts","./task1/Task1":"src/task1/Task1.ts","./task2/Task2":"src/task2/Task2.ts","./task3/Task3":"src/task3/Task3.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -911,7 +961,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51295" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61502" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

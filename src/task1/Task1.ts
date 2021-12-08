@@ -1,13 +1,8 @@
-import { CountriesData } from '../helpers/Requests';
-import { localStorageCountriesData } from '..';
+import { configuration } from '../config';
+import { getCountriesData } from '../requests';
 import { Country } from '../types/interfaces';
 
-export const Task1 = async () => {
-  const configuration = {
-    countriesKey: 'allCountries',
-    dateKey: 'dateWhenSaved',
-  };
-
+export const Task1 = async (localStorageCountriesData: Country[]) => {
   const currentDate = Date.now();
   const msOf7Days = 604_800_000;
 
@@ -16,7 +11,7 @@ export const Task1 = async () => {
     console.log('❗ Data does not exist ❗');
 
     // Get data from api
-    const countries: Country[] = await CountriesData();
+    const countries: Country[] = await getCountriesData();
 
     // Save countries data to LocalStorage, save
     localStorage.setItem(configuration.countriesKey, JSON.stringify(countries));
@@ -42,7 +37,7 @@ export const Task1 = async () => {
       console.log('📝 Now you updating data!');
 
       const oldData: Country[] = localStorageData;
-      const newData: Country[] = await CountriesData();
+      const newData: Country[] = await getCountriesData();
 
       console.log('🟨 Changed data is in:\n', compareData(oldData, newData));
 

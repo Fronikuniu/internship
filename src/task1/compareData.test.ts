@@ -1,12 +1,14 @@
 import { compareData } from './Task1';
-import { afghanistan, afghanistanWithChangedPopulation } from '../mocks/Country';
+import { afghanistan } from '../mocks/Country';
 
 describe('Tests for Task 1: Compare Data', () => {
   test('Compare correct data without difference', () => {
-    expect(compareData(afghanistan, afghanistan)).toStrictEqual([]);
+    expect(compareData([afghanistan], [afghanistan])).toHaveLength(0);
   });
 
   test('Compare correct data with difference', () => {
-    expect(compareData(afghanistan, afghanistanWithChangedPopulation)).toStrictEqual(['Afghanistan']);
+    const updatedAfghanistan = { ...afghanistan, population: 41223532 };
+
+    expect(compareData([afghanistan], [updatedAfghanistan])).toHaveLength(1);
   });
 });

@@ -1,24 +1,28 @@
 import { afghanistan, germany, poland, togo } from '../mocks/Country';
-import { getAllCountriesByAcronym } from './Task2';
+import { getAllCountriesByTypeAndValue } from './Task2';
 
-describe('Tests for Task 2: Select only countries that belong to the [acronym]', () => {
+describe('Tests for Task 2: Select only [type] that belong to the [value]', () => {
   test('Data with 1 EU country', () => {
-    expect(getAllCountriesByAcronym([...afghanistan, ...poland], 'EU')).toHaveLength(1);
+    expect(getAllCountriesByTypeAndValue([afghanistan, poland], 'regionalBlocs acronym', 'EU', true)).toHaveLength(1);
   });
 
   test('Data with 2 EU country', () => {
-    expect(getAllCountriesByAcronym([...afghanistan, ...poland, ...germany], 'EU')).toHaveLength(2);
+    expect(getAllCountriesByTypeAndValue([afghanistan, poland, germany], 'regionalBlocs acronym', 'EU', true)).toHaveLength(2);
   });
 
   test('Data without EU country', () => {
-    expect(getAllCountriesByAcronym([...afghanistan, ...togo], 'EU')).toHaveLength(0);
+    expect(getAllCountriesByTypeAndValue([afghanistan, togo], 'regionalBlocs acronym', 'EU', true)).toHaveLength(0);
   });
 
   test('Data with 1 SAARC country', () => {
-    expect(getAllCountriesByAcronym([...afghanistan, ...poland], 'SAARC')).toHaveLength(1);
+    expect(getAllCountriesByTypeAndValue([afghanistan, poland], 'regionalBlocs acronym', 'SAARC', true)).toHaveLength(1);
   });
 
   test('Data with 1 AU country', () => {
-    expect(getAllCountriesByAcronym([...afghanistan, ...poland, ...togo], 'AU')).toHaveLength(1);
+    expect(getAllCountriesByTypeAndValue([afghanistan, poland, togo], 'regionalBlocs acronym', 'AU', true)).toHaveLength(1);
+  });
+
+  test('Data without 1 AU country', () => {
+    expect(getAllCountriesByTypeAndValue([afghanistan, poland, togo], 'regionalBlocs acronym', 'AU', false)).toHaveLength(2);
   });
 });

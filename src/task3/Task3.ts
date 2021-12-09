@@ -29,10 +29,10 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
     },
   };
 
-  const euCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'EU', true);
-  const naftaCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'NAFTA', true);
-  const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'AU', true);
-  const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'EU NAFTA AU', false);
+  const euCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'EU', true);
+  const naftaCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'NAFTA', true);
+  const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
+  const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
 
   const langObject = {
     iso639_1: {

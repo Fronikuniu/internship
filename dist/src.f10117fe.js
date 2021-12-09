@@ -535,6 +535,8 @@ exports.compareData = compareData;
 },{"../config":"src/config.ts","../requests":"src/requests.ts"}],"src/task2/Task2.ts":[function(require,module,exports) {
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function (resolve) {
@@ -695,7 +697,7 @@ var Task2 = function Task2(localStorageCountriesData) {
   return __awaiter(void 0, void 0, void 0, function () {
     var enterCountryValuePathToSearchFor, enterCountryValueToSearchFor, whetherToContain, arrayOfCountries, enterPhrasePathToSearchFor, enterPhraseToSearchFor, arrayOfCountriesContainingPhrase, enterSortPathToSearchFor, enterSortToSearchFor, arrayOfSortedCountries, enterLimit, enterTypeLimit, populateOfLimitedArray, isBigger;
     return __generator(this, function (_a) {
-      enterCountryValuePathToSearchFor = 'regionalBlocs acronym';
+      enterCountryValuePathToSearchFor = 'regionalBlocs.acronym';
       enterCountryValueToSearchFor = 'EU';
       whetherToContain = true;
       arrayOfCountries = exports.getAllCountriesByTypeAndValue(localStorageCountriesData, enterCountryValuePathToSearchFor, enterCountryValueToSearchFor, whetherToContain);
@@ -720,45 +722,59 @@ var Task2 = function Task2(localStorageCountriesData) {
   });
 };
 
-exports.Task2 = Task2; // Need add types instead ': any' bc i change to ': any' from ': Country[]'
-// In countries i need add something like [type: string]: ?? but i dont know how to do it
+exports.Task2 = Task2;
 
-var getAllCountriesByTypeAndValue = function getAllCountriesByTypeAndValue(countries, types, values, containingOrNot) {
-  var typesData = types.split(' ');
-  var valuesData = values.split(' ');
+var getAllCountriesByTypeAndValue = function getAllCountriesByTypeAndValue(countries, types, value, containingOrNot) {
+  var typesData = types.split('.');
   return countries.filter(function (country) {
-    var _a, _b, _c, _d;
+    var arrayPath = country[typesData[0]];
 
-    if (containingOrNot) {
-      if (typesData.length === 1) {
-        return (_a = country[typesData[0]]) === null || _a === void 0 ? void 0 : _a.includes(valuesData[0] || valuesData[1] || valuesData[2]);
-      } else {
-        return (_b = country[typesData[0]]) === null || _b === void 0 ? void 0 : _b.some(function (c) {
-          if (valuesData.length === 1) {
-            return c[typesData[1]] === valuesData[0];
-          } else if (valuesData.length === 2) {
-            return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1];
-          } else if (valuesData.length === 3) {
-            return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1] || c[typesData[1]] === valuesData[2];
-          }
+    if (arrayPath) {
+      if (containingOrNot) {
+        if (Array.isArray(arrayPath) && _typeof(arrayPath[0]) === 'object') return arrayPath.some(function (data) {
+          return data[typesData[1]] === value;
         });
-      }
-    } else {
-      if (typesData.length === 1) {
-        return !((_c = country[typesData[0]]) === null || _c === void 0 ? void 0 : _c.includes(valuesData[0] || valuesData[1] || valuesData[2]));
+        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return arrayPath.includes(value);
+        return arrayPath === value;
       } else {
-        return (_d = country[typesData[0]]) === null || _d === void 0 ? void 0 : _d.some(function (c) {
-          if (valuesData.length === 1) {
-            return c[typesData[1]] !== valuesData[0];
-          } else if (valuesData.length === 2) {
-            return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1];
-          } else if (valuesData.length === 3) {
-            return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1] || c[typesData[1]] !== valuesData[2];
-          }
+        if (Array.isArray(arrayPath) && _typeof(arrayPath[0]) === 'object') return arrayPath.some(function (data) {
+          return data[typesData[1]] !== value;
         });
+        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return !arrayPath.includes(value);
+        return arrayPath !== value;
       }
     }
-  });
+  }); // return countries.filter((country: any) => {
+  //   if (containingOrNot) {
+  //     if (typesData.length === 1) {
+  //       return country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
+  //     } else {
+  //       return country[typesData[0]]?.some((c: any) => {
+  //         if (valuesData.length === 1) {
+  //           return c[typesData[1]] === valuesData[0];
+  //         } else if (valuesData.length === 2) {
+  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1];
+  //         } else if (valuesData.length === 3) {
+  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1] || c[typesData[1]] === valuesData[2];
+  //         }
+  //       });
+  //     }
+  //   } else {
+  //     if (typesData.length === 1) {
+  //       return !country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
+  //     } else {
+  //       return country[typesData[0]]?.some((c: any) => {
+  //         if (valuesData.length === 1) {
+  //           return c[typesData[1]] !== valuesData[0];
+  //         } else if (valuesData.length === 2) {
+  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1];
+  //         } else if (valuesData.length === 3) {
+  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1] || c[typesData[1]] !== valuesData[2];
+  //         }
+  //       });
+  //     }
+  //   }
+  // });
 };
 
 exports.getAllCountriesByTypeAndValue = getAllCountriesByTypeAndValue;
@@ -835,10 +851,10 @@ var Task3 = function Task3(localStorageCountriesData) {
       currencies: []
     }
   };
-  var euCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'EU', true);
-  var naftaCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'NAFTA', true);
-  var auCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'AU', true);
-  var countriesWithoutEuNaftaAu = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs acronym', 'EU NAFTA AU', false);
+  var euCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'EU', true);
+  var naftaCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'NAFTA', true);
+  var auCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
+  var countriesWithoutEuNaftaAu = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
   var langObject = {
     iso639_1: {
       countries: ['alpha3Code'],
@@ -961,7 +977,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61502" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58242" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -2,7 +2,7 @@ import { Country } from '../types/interfaces';
 
 export const Task2 = async (localStorageCountriesData: Country[]) => {
   // Select all EU countries
-  const enterCountryValuePathToSearchFor: string = 'regionalBlocs acronym';
+  const enterCountryValuePathToSearchFor: string = 'regionalBlocs.acronym';
   const enterCountryValueToSearchFor: string = 'EU';
   const whetherToContain: boolean = true;
   const arrayOfCountries: Country[] | string = getAllCountriesByTypeAndValue(localStorageCountriesData, enterCountryValuePathToSearchFor, enterCountryValueToSearchFor, whetherToContain);
@@ -32,43 +32,56 @@ export const Task2 = async (localStorageCountriesData: Country[]) => {
   );
 };
 
-// Need add types instead ': any' bc i change to ': any' from ': Country[]'
-// In countries i need add something like [type: string]: ?? but i dont know how to do it
-export const getAllCountriesByTypeAndValue = (countries: any, types: string, values: string, containingOrNot: boolean): Country[] => {
-  const typesData = types.split(' ');
-  const valuesData = values.split(' ');
+export const getAllCountriesByTypeAndValue = (countries: Country[], types: string, value: string, containingOrNot: boolean) => {
+  const typesData = types.split('.');
 
   return countries.filter((country: any) => {
-    if (containingOrNot) {
-      if (typesData.length === 1) {
-        return country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
+    const arrayPath = country[typesData[0]];
+
+    if (arrayPath) {
+      if (containingOrNot) {
+        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] === value);
+        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return arrayPath.includes(value);
+        return arrayPath === value;
       } else {
-        return country[typesData[0]]?.some((c: any) => {
-          if (valuesData.length === 1) {
-            return c[typesData[1]] === valuesData[0];
-          } else if (valuesData.length === 2) {
-            return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1];
-          } else if (valuesData.length === 3) {
-            return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1] || c[typesData[1]] === valuesData[2];
-          }
-        });
-      }
-    } else {
-      if (typesData.length === 1) {
-        return !country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
-      } else {
-        return country[typesData[0]]?.some((c: any) => {
-          if (valuesData.length === 1) {
-            return c[typesData[1]] !== valuesData[0];
-          } else if (valuesData.length === 2) {
-            return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1];
-          } else if (valuesData.length === 3) {
-            return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1] || c[typesData[1]] !== valuesData[2];
-          }
-        });
+        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] !== value);
+        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return !arrayPath.includes(value);
+        return arrayPath !== value;
       }
     }
   });
+
+  // return countries.filter((country: any) => {
+  //   if (containingOrNot) {
+  //     if (typesData.length === 1) {
+  //       return country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
+  //     } else {
+  //       return country[typesData[0]]?.some((c: any) => {
+  //         if (valuesData.length === 1) {
+  //           return c[typesData[1]] === valuesData[0];
+  //         } else if (valuesData.length === 2) {
+  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1];
+  //         } else if (valuesData.length === 3) {
+  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1] || c[typesData[1]] === valuesData[2];
+  //         }
+  //       });
+  //     }
+  //   } else {
+  //     if (typesData.length === 1) {
+  //       return !country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
+  //     } else {
+  //       return country[typesData[0]]?.some((c: any) => {
+  //         if (valuesData.length === 1) {
+  //           return c[typesData[1]] !== valuesData[0];
+  //         } else if (valuesData.length === 2) {
+  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1];
+  //         } else if (valuesData.length === 3) {
+  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1] || c[typesData[1]] !== valuesData[2];
+  //         }
+  //       });
+  //     }
+  //   }
+  // });
 };
 
 export const selectCountriesIncludesAnyLetter = (countries: any, type: string, value: string): Country[] => {

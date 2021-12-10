@@ -34,6 +34,10 @@ export const Task2 = async (localStorageCountriesData: Country[]) => {
 
 export const getAllCountriesByTypeAndValue = (countries: Country[], types: string, value: string, containingOrNot: boolean) => {
   const typesData = types.split('.');
+  // I try use regex instead data[typesData[1]] === value but i getting different data
+  // const regex = new RegExp(value, 'gm');
+  // console.log(regex);
+  // regex.exec(data[typesData[1]])
 
   return countries.filter((country: any) => {
     const arrayPath = country[typesData[0]];
@@ -50,38 +54,6 @@ export const getAllCountriesByTypeAndValue = (countries: Country[], types: strin
       }
     }
   });
-
-  // return countries.filter((country: any) => {
-  //   if (containingOrNot) {
-  //     if (typesData.length === 1) {
-  //       return country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
-  //     } else {
-  //       return country[typesData[0]]?.some((c: any) => {
-  //         if (valuesData.length === 1) {
-  //           return c[typesData[1]] === valuesData[0];
-  //         } else if (valuesData.length === 2) {
-  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1];
-  //         } else if (valuesData.length === 3) {
-  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1] || c[typesData[1]] === valuesData[2];
-  //         }
-  //       });
-  //     }
-  //   } else {
-  //     if (typesData.length === 1) {
-  //       return !country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
-  //     } else {
-  //       return country[typesData[0]]?.some((c: any) => {
-  //         if (valuesData.length === 1) {
-  //           return c[typesData[1]] !== valuesData[0];
-  //         } else if (valuesData.length === 2) {
-  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1];
-  //         } else if (valuesData.length === 3) {
-  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1] || c[typesData[1]] !== valuesData[2];
-  //         }
-  //       });
-  //     }
-  //   }
-  // });
 };
 
 export const selectCountriesIncludesAnyLetter = (countries: any, type: string, value: string): Country[] => {

@@ -23,23 +23,24 @@ export interface Country<> {
   subregion: string;
   timezones: Array<string>;
   topLevelDomain: Array<string>;
-  translations: translation;
+  translations: Translation;
 }
 
-type translation = {
+type Translation = {
   [key: string]: string;
 };
 
-export type acronyms = {
+export type Acronyms = {
   [key: string]: {
     countries: string[];
     population: number;
-    languages: languages;
+    area: number;
+    languages: Languages;
     currencies: string[];
   };
 };
 
-type languages = {
+type Languages = {
   [key: string]: {
     countries: string[];
     population: number;

@@ -1,31 +1,35 @@
-import { getAllCountriesByTypeAndValue } from '../task2/Task2';
-import { acronyms, Country } from '../types/interfaces';
+import { getAllCountriesByTypeAndValue, sortCountriesByType } from '../task2/Task2';
+import { Acronyms, Country } from '../types/interfaces';
 
 export const Task3 = (localStorageCountriesData: Country[]) => {
-  const acronyms: acronyms = {
+  const acronyms: Acronyms = {
     EU: {
       countries: [],
       population: 0,
       languages: {},
       currencies: [],
+      area: 0,
     },
     NAFTA: {
       countries: [],
       population: 0,
       languages: {},
       currencies: [],
+      area: 0,
     },
     AU: {
       countries: [],
       population: 0,
       languages: {},
       currencies: [],
+      area: 0,
     },
     other: {
       countries: [],
       population: 0,
       languages: {},
       currencies: [],
+      area: 0,
     },
   };
 
@@ -34,67 +38,113 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
   const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
   const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
 
-  const langObject = {
-    iso639_1: {
-      countries: ['alpha3Code'],
-      population: 0,
-      area: 0,
-      name: 'nativeName',
-    },
-  };
+  getCountriesDataAbout(euCountries, 'EU', acronyms);
+  getCountriesDataAbout(naftaCountries, 'NAFTA', acronyms);
+  getCountriesDataAbout(auCountries, 'AU', acronyms);
+  getCountriesDataAbout(countriesWithoutEuNaftaAu, 'other', acronyms);
 
-  euCountries.forEach((country) => {
-    acronyms.EU.countries.push(country.nativeName);
-    country.currencies.every((currencie) => acronyms.EU.currencies.push(currencie.name));
-    acronyms.EU.population += country.population;
-  });
-
-  naftaCountries.forEach((country) => {
-    acronyms.NAFTA.countries.push(country.nativeName);
-    country.currencies.every((currencie) => acronyms.NAFTA.currencies.push(currencie.name));
-    acronyms.NAFTA.population += country.population;
-  });
-
-  auCountries.forEach((country) => {
-    acronyms.AU.countries.push(country.nativeName);
-    country.currencies.every((currencie) => acronyms.AU.currencies.push(currencie.name));
-    acronyms.AU.population += country.population;
-  });
-
-  countriesWithoutEuNaftaAu.forEach((country) => {
-    acronyms.other.countries.push(country.nativeName);
-    country.currencies?.every((currencie) => acronyms.other.currencies.push(currencie.name));
-    acronyms.other.population += country.population;
-  });
-
-  const keys = Object.keys(acronyms);
-  keys.forEach((key) => {
-    acronyms[key].currencies = new Set(acronyms[key].currencies);
-    acronyms[key].countries = acronyms[key].countries.sort().reverse();
-  });
+  console.log('\n🔸 The name of the organization with the largest population:', sortObject(acronyms, { value: 'population', place: 1, sort: 'desc' }));
+  console.log('\n🔸 Name of the organization with the second largest population:', sortObject(acronyms, { value: 'population', place: 2, sort: 'desc' }));
+  console.log('\n🔸 The name of the organization occupying the third largest area:', sortObject(acronyms, { value: 'area', place: 3, sort: 'desc' }));
+  console.log(
+    '\n🔸 Names of organizations with the largest and smallest number of languages assigned to them:\n',
+    'Largest:',
+    sortObject(acronyms, { value: 'languages', place: 1, sort: 'desc' }),
+    '\n Smallest:',
+    sortObject(acronyms, { value: 'languages', place: 1, sort: 'asc' })
+  );
+  console.log('\n🔸 Name of the organization using the largest number of currencies:', sortObject(acronyms, { value: 'currencies', place: 1, sort: 'desc' })); //currencies need to add
+  console.log('\n🔸 The name of the organization with the fewest number of member states:', sortObject(acronyms, { value: 'countries', place: 1, sort: 'asc' }));
 
   console.log('\n🔸 EU, NAFTA, AU and other countries: \n', acronyms);
 };
 
-//✔ * Stwórz nowy obiekt. Powinien on posiadać klucze EU, NAFTA, AU oraz other. Każdy z tych kluczy będzie zawierał obiekt o kluczach countries, population, languages oraz currencies.
-//   Wartościami countries oraz currencies są puste tablice, wartość population wynosi 0. Wartość languages to pusty obiekt.
-//✔ * W TP znajdź kraje należące do EU, NAFTA albo AU. Jeśli państwo należy do którejś z tych grup, umieść jego dane w stosownym obiekcie: natywną nazwę w tablicy countries, używane przez nią
-//   waluty w tablicy currencies oraz dodaj jej populację do wartości population.
-//? * Sprawdź języki przypisane do kraju. Użyj ich kodu iso639_1 jako klucza dla obiektu languages. Jeśli danego języka nie ma w obiekcie languages, przypisz do niego nowy obiekt o kluczach
-//   countries(wartość początkowa: pusta arajka), population(0), area(0) oraz name(pusty string). Jeśli dany język znajduje się w obiekcie languages, dodaj do tablicy countries kod alpha3code
-//   kraju, w którym jest używany, populację tego kraju do wartości population, obszar kraju do wartości area, a do name przypisz natywną nazwę tego języka.
-//-✔ * Jeśli kraj nie należy do żadnej z podanych wcześniej organizacji wykonaj kroki z poprzednich dwóch punktów, ale dane umieść w tablicy other.
-// * Jeśli kraj należy do więcej, niż jednej organizacji, umieść jego dane we wszystkich pasujących obiektach bloków. Blok other może się powtarzać.
-//✔ * Dla każdej organizacji dane w tablicy currencies nie mogą się powtarzać.
-//✔ * Dla każdej organizacji dane w tablicy countries powinny być posortowane alfabetycznie z do a.
-// * Wyświetl w konsoli:
-//  - Nazwę organizacji o największej populacji,
-//  - Nazwę organizacji o drugiej największej gęstości zaludnienia,
-//  - Nazwę organizacji zajmującej trzeci największy obszar,
-//  - Nazwy organizacji o największej i najmniejszej przypisanej do nich liczbie języków,
-//  - Nazwę organizacji wykorzystującej największą liczbę walut,
-//  - Nazwę organizacji posiadającej najmniejszą liczbę państw członkowskich,
-//  - Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
-//  - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
-//  - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
-// * W przypadku remisów wyświetl wszystkich zwycięzców.
+export const getCountriesDataAbout = (array: Country[], acronym: keyof Acronyms, acronyms: Acronyms) => {
+  const path = acronyms[acronym];
+
+  array.forEach((country) => {
+    path.countries.push(country.nativeName);
+    country.currencies?.every((currencie) => path.currencies.push(currencie.name));
+    path.population += country.population;
+    typeof country.area === 'number' && (path.area += country.area);
+
+    const langKeys = Object.keys(path.languages);
+    const countryLang = country.languages.map((lang) => lang.iso639_1);
+
+    countryLang.forEach((lang, i) => {
+      if (lang === langKeys[i]) {
+        path.languages[lang].countries.push(country.languages[i].nativeName);
+        path.languages[lang].name.push(country.alpha3Code);
+        path.languages[lang].area += country.area;
+        path.languages[lang].population += country.population;
+      } else {
+        const language = country.languages[i].iso639_1;
+        const countries = country.alpha3Code;
+        const name = country.languages[i].nativeName;
+        const area = country.area;
+        const population = country.population;
+        path.languages = { ...path.languages, ...{ [language]: { population, area, name: [name], countries: [countries] } } };
+      }
+    });
+  });
+
+  const unique = new Set(path.currencies);
+  path.currencies = Array.from(unique);
+  path.countries = path.countries.sort().reverse();
+};
+
+export const sortObject = (object: Acronyms, arg: { value: string; place: number; sort: string }) => {
+  const langKeys = Object.keys(object);
+  const array: string[] | number[] = [];
+  const index = arg.place - 1;
+  const result: string[] = [];
+
+  langKeys.forEach((key) => {
+    const value = object[key][arg.value];
+    const valueLength = Object.getOwnPropertyNames(value).length;
+    if (typeof value === 'object') array.push(valueLength);
+    if (typeof value !== 'object') array.push(value);
+  });
+
+  let sortedArray: any = [];
+  if (arg.sort === 'desc') {
+    sortedArray = array.sort((a: any, b: any) => b - a);
+  } else {
+    sortedArray = array.sort((a: any, b: any) => a - b);
+  }
+
+  langKeys.forEach((key) => {
+    const value = object[key][arg.value];
+    const valueLength = Object.getOwnPropertyNames(value).length;
+
+    if (typeof value === 'object' && valueLength === sortedArray[index]) result.push(key);
+    if (typeof value !== 'object' && value === sortedArray[index]) result.push(key);
+  });
+
+  return result.toString();
+};
+
+/*
+✔ * Stwórz nowy obiekt. Powinien on posiadać klucze EU, NAFTA, AU oraz other. Każdy z tych kluczy będzie zawierał obiekt o kluczach countries, population, languages oraz currencies.
+  Wartościami countries oraz currencies są puste tablice, wartość population wynosi 0. Wartość languages to pusty obiekt.
+✔ * W TP znajdź kraje należące do EU, NAFTA albo AU. Jeśli państwo należy do którejś z tych grup, umieść jego dane w stosownym obiekcie: natywną nazwę w tablicy countries, używane przez nią
+  waluty w tablicy currencies oraz dodaj jej populację do wartości population.
+✔ * Sprawdź języki przypisane do kraju. Użyj ich kodu iso639_1 jako klucza dla obiektu languages. Jeśli danego języka nie ma w obiekcie languages, przypisz do niego nowy obiekt o kluczach
+  countries(wartość początkowa: pusta arajka), population(0), area(0) oraz name(pusty string). Jeśli dany język znajduje się w obiekcie languages, dodaj do tablicy countries kod alpha3code
+  kraju, w którym jest używany, populację tego kraju do wartości population, obszar kraju do wartości area, a do name przypisz natywną nazwę tego języka.
+✔ * Jeśli kraj nie należy do żadnej z podanych wcześniej organizacji wykonaj kroki z poprzednich dwóch punktów, ale dane umieść w tablicy other.
+✔ * Jeśli kraj należy do więcej, niż jednej organizacji, umieść jego dane we wszystkich pasujących obiektach bloków. Blok other może się powtarzać.
+✔ * Dla każdej organizacji dane w tablicy currencies nie mogą się powtarzać.
+✔ * Dla każdej organizacji dane w tablicy countries powinny być posortowane alfabetycznie z do a.
+* Wyświetl w konsoli:
+ ✔- Nazwę organizacji o największej populacji,
+ ✔- Nazwę organizacji o drugiej największej gęstości zaludnienia,
+ ✔- Nazwę organizacji zajmującej trzeci największy obszar,
+ ✔- Nazwy organizacji o największej i najmniejszej przypisanej do nich liczbie języków,
+ ✔- Nazwę organizacji wykorzystującej największą liczbę walut,
+ ✔- Nazwę organizacji posiadającej najmniejszą liczbę państw członkowskich,
+ - Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
+ - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
+ - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
+* W przypadku remisów wyświetl wszystkich zwycięzców.
+*/

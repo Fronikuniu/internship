@@ -725,7 +725,11 @@ var Task2 = function Task2(localStorageCountriesData) {
 exports.Task2 = Task2;
 
 var getAllCountriesByTypeAndValue = function getAllCountriesByTypeAndValue(countries, types, value, containingOrNot) {
-  var typesData = types.split('.');
+  var typesData = types.split('.'); // I try use regex instead data[typesData[1]] === value but i getting different data
+  // const regex = new RegExp(value, 'gm');
+  // console.log(regex);
+  // regex.exec(data[typesData[1]])
+
   return countries.filter(function (country) {
     var arrayPath = country[typesData[0]];
 
@@ -744,37 +748,7 @@ var getAllCountriesByTypeAndValue = function getAllCountriesByTypeAndValue(count
         return arrayPath !== value;
       }
     }
-  }); // return countries.filter((country: any) => {
-  //   if (containingOrNot) {
-  //     if (typesData.length === 1) {
-  //       return country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
-  //     } else {
-  //       return country[typesData[0]]?.some((c: any) => {
-  //         if (valuesData.length === 1) {
-  //           return c[typesData[1]] === valuesData[0];
-  //         } else if (valuesData.length === 2) {
-  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1];
-  //         } else if (valuesData.length === 3) {
-  //           return c[typesData[1]] === valuesData[0] || c[typesData[1]] === valuesData[1] || c[typesData[1]] === valuesData[2];
-  //         }
-  //       });
-  //     }
-  //   } else {
-  //     if (typesData.length === 1) {
-  //       return !country[typesData[0]]?.includes(valuesData[0] || valuesData[1] || valuesData[2]);
-  //     } else {
-  //       return country[typesData[0]]?.some((c: any) => {
-  //         if (valuesData.length === 1) {
-  //           return c[typesData[1]] !== valuesData[0];
-  //         } else if (valuesData.length === 2) {
-  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1];
-  //         } else if (valuesData.length === 3) {
-  //           return c[typesData[1]] !== valuesData[0] || c[typesData[1]] !== valuesData[1] || c[typesData[1]] !== valuesData[2];
-  //         }
-  //       });
-  //     }
-  //   }
-  // });
+  });
 };
 
 exports.getAllCountriesByTypeAndValue = getAllCountriesByTypeAndValue;
@@ -817,10 +791,28 @@ exports.calculateSumCountriesByType = calculateSumCountriesByType;
 },{}],"src/task3/Task3.ts":[function(require,module,exports) {
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var __assign = this && this.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Task3 = void 0;
+exports.sortObject = exports.getCountriesDataAbout = exports.Task3 = void 0;
 
 var Task2_1 = require("../task2/Task2");
 
@@ -830,99 +822,181 @@ var Task3 = function Task3(localStorageCountriesData) {
       countries: [],
       population: 0,
       languages: {},
-      currencies: []
+      currencies: [],
+      area: 0
     },
     NAFTA: {
       countries: [],
       population: 0,
       languages: {},
-      currencies: []
+      currencies: [],
+      area: 0
     },
     AU: {
       countries: [],
       population: 0,
       languages: {},
-      currencies: []
+      currencies: [],
+      area: 0
     },
     other: {
       countries: [],
       population: 0,
       languages: {},
-      currencies: []
+      currencies: [],
+      area: 0
     }
   };
   var euCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'EU', true);
   var naftaCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'NAFTA', true);
   var auCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
   var countriesWithoutEuNaftaAu = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
-  var langObject = {
-    iso639_1: {
-      countries: ['alpha3Code'],
-      population: 0,
-      area: 0,
-      name: 'nativeName'
-    }
-  };
-  euCountries.forEach(function (country) {
-    acronyms.EU.countries.push(country.nativeName);
-    country.currencies.every(function (currencie) {
-      return acronyms.EU.currencies.push(currencie.name);
-    });
-    acronyms.EU.population += country.population;
-  });
-  naftaCountries.forEach(function (country) {
-    acronyms.NAFTA.countries.push(country.nativeName);
-    country.currencies.every(function (currencie) {
-      return acronyms.NAFTA.currencies.push(currencie.name);
-    });
-    acronyms.NAFTA.population += country.population;
-  });
-  auCountries.forEach(function (country) {
-    acronyms.AU.countries.push(country.nativeName);
-    country.currencies.every(function (currencie) {
-      return acronyms.AU.currencies.push(currencie.name);
-    });
-    acronyms.AU.population += country.population;
-  });
-  countriesWithoutEuNaftaAu.forEach(function (country) {
-    var _a;
+  exports.getCountriesDataAbout(euCountries, 'EU', acronyms);
+  exports.getCountriesDataAbout(naftaCountries, 'NAFTA', acronyms);
+  exports.getCountriesDataAbout(auCountries, 'AU', acronyms);
+  exports.getCountriesDataAbout(countriesWithoutEuNaftaAu, 'other', acronyms);
+  console.log('\n🔸 The name of the organization with the largest population:', exports.sortObject(acronyms, {
+    value: 'population',
+    place: 1,
+    sort: 'desc'
+  }));
+  console.log('\n🔸 Name of the organization with the second largest population:', exports.sortObject(acronyms, {
+    value: 'population',
+    place: 2,
+    sort: 'desc'
+  }));
+  console.log('\n🔸 The name of the organization occupying the third largest area:', exports.sortObject(acronyms, {
+    value: 'area',
+    place: 3,
+    sort: 'desc'
+  }));
+  console.log('\n🔸 Names of organizations with the largest and smallest number of languages assigned to them:\n', 'Largest:', exports.sortObject(acronyms, {
+    value: 'languages',
+    place: 1,
+    sort: 'desc'
+  }), '\n Smallest:', exports.sortObject(acronyms, {
+    value: 'languages',
+    place: 1,
+    sort: 'asc'
+  }));
+  console.log('\n🔸 Name of the organization using the largest number of currencies:', exports.sortObject(acronyms, {
+    value: 'currencies',
+    place: 1,
+    sort: 'desc'
+  })); //currencies need to add
 
-    acronyms.other.countries.push(country.nativeName);
-    (_a = country.currencies) === null || _a === void 0 ? void 0 : _a.every(function (currencie) {
-      return acronyms.other.currencies.push(currencie.name);
-    });
-    acronyms.other.population += country.population;
-  });
-  var keys = Object.keys(acronyms);
-  keys.forEach(function (key) {
-    acronyms[key].currencies = new Set(acronyms[key].currencies);
-    acronyms[key].countries = acronyms[key].countries.sort().reverse();
-  });
+  console.log('\n🔸 The name of the organization with the fewest number of member states:', exports.sortObject(acronyms, {
+    value: 'countries',
+    place: 1,
+    sort: 'asc'
+  }));
   console.log('\n🔸 EU, NAFTA, AU and other countries: \n', acronyms);
 };
 
-exports.Task3 = Task3; //✔ * Stwórz nowy obiekt. Powinien on posiadać klucze EU, NAFTA, AU oraz other. Każdy z tych kluczy będzie zawierał obiekt o kluczach countries, population, languages oraz currencies.
-//   Wartościami countries oraz currencies są puste tablice, wartość population wynosi 0. Wartość languages to pusty obiekt.
-//✔ * W TP znajdź kraje należące do EU, NAFTA albo AU. Jeśli państwo należy do którejś z tych grup, umieść jego dane w stosownym obiekcie: natywną nazwę w tablicy countries, używane przez nią
-//   waluty w tablicy currencies oraz dodaj jej populację do wartości population.
-//? * Sprawdź języki przypisane do kraju. Użyj ich kodu iso639_1 jako klucza dla obiektu languages. Jeśli danego języka nie ma w obiekcie languages, przypisz do niego nowy obiekt o kluczach
-//   countries(wartość początkowa: pusta arajka), population(0), area(0) oraz name(pusty string). Jeśli dany język znajduje się w obiekcie languages, dodaj do tablicy countries kod alpha3code
-//   kraju, w którym jest używany, populację tego kraju do wartości population, obszar kraju do wartości area, a do name przypisz natywną nazwę tego języka.
-//-✔ * Jeśli kraj nie należy do żadnej z podanych wcześniej organizacji wykonaj kroki z poprzednich dwóch punktów, ale dane umieść w tablicy other.
-// * Jeśli kraj należy do więcej, niż jednej organizacji, umieść jego dane we wszystkich pasujących obiektach bloków. Blok other może się powtarzać.
-//✔ * Dla każdej organizacji dane w tablicy currencies nie mogą się powtarzać.
-//✔ * Dla każdej organizacji dane w tablicy countries powinny być posortowane alfabetycznie z do a.
-// * Wyświetl w konsoli:
-//  - Nazwę organizacji o największej populacji,
-//  - Nazwę organizacji o drugiej największej gęstości zaludnienia,
-//  - Nazwę organizacji zajmującej trzeci największy obszar,
-//  - Nazwy organizacji o największej i najmniejszej przypisanej do nich liczbie języków,
-//  - Nazwę organizacji wykorzystującej największą liczbę walut,
-//  - Nazwę organizacji posiadającej najmniejszą liczbę państw członkowskich,
-//  - Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
-//  - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
-//  - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
-// * W przypadku remisów wyświetl wszystkich zwycięzców.
+exports.Task3 = Task3;
+
+var getCountriesDataAbout = function getCountriesDataAbout(array, acronym, acronyms) {
+  var path = acronyms[acronym];
+  array.forEach(function (country) {
+    var _a;
+
+    path.countries.push(country.nativeName);
+    (_a = country.currencies) === null || _a === void 0 ? void 0 : _a.every(function (currencie) {
+      return path.currencies.push(currencie.name);
+    });
+    path.population += country.population;
+    typeof country.area === 'number' && (path.area += country.area);
+    var langKeys = Object.keys(path.languages);
+    var countryLang = country.languages.map(function (lang) {
+      return lang.iso639_1;
+    });
+    countryLang.forEach(function (lang, i) {
+      var _a;
+
+      if (lang === langKeys[i]) {
+        path.languages[lang].countries.push(country.languages[i].nativeName);
+        path.languages[lang].name.push(country.alpha3Code);
+        path.languages[lang].area += country.area;
+        path.languages[lang].population += country.population;
+      } else {
+        var language = country.languages[i].iso639_1;
+        var countries = country.alpha3Code;
+        var name = country.languages[i].nativeName;
+        var area = country.area;
+        var population = country.population;
+        path.languages = __assign(__assign({}, path.languages), (_a = {}, _a[language] = {
+          population: population,
+          area: area,
+          name: [name],
+          countries: [countries]
+        }, _a));
+      }
+    });
+  });
+  var unique = new Set(path.currencies);
+  path.currencies = Array.from(unique);
+  path.countries = path.countries.sort().reverse();
+};
+
+exports.getCountriesDataAbout = getCountriesDataAbout;
+
+var sortObject = function sortObject(object, arg) {
+  var langKeys = Object.keys(object);
+  var array = [];
+  var index = arg.place - 1;
+  var result = [];
+  langKeys.forEach(function (key) {
+    var value = object[key][arg.value];
+    var valueLength = Object.getOwnPropertyNames(value).length;
+    if (_typeof(value) === 'object') array.push(valueLength);
+    if (_typeof(value) !== 'object') array.push(value);
+  });
+  var sortedArray = [];
+
+  if (arg.sort === 'desc') {
+    sortedArray = array.sort(function (a, b) {
+      return b - a;
+    });
+  } else {
+    sortedArray = array.sort(function (a, b) {
+      return a - b;
+    });
+  }
+
+  langKeys.forEach(function (key) {
+    var value = object[key][arg.value];
+    var valueLength = Object.getOwnPropertyNames(value).length;
+    if (_typeof(value) === 'object' && valueLength === sortedArray[index]) result.push(key);
+    if (_typeof(value) !== 'object' && value === sortedArray[index]) result.push(key);
+  });
+  return result.toString();
+};
+
+exports.sortObject = sortObject;
+/*
+✔ * Stwórz nowy obiekt. Powinien on posiadać klucze EU, NAFTA, AU oraz other. Każdy z tych kluczy będzie zawierał obiekt o kluczach countries, population, languages oraz currencies.
+  Wartościami countries oraz currencies są puste tablice, wartość population wynosi 0. Wartość languages to pusty obiekt.
+✔ * W TP znajdź kraje należące do EU, NAFTA albo AU. Jeśli państwo należy do którejś z tych grup, umieść jego dane w stosownym obiekcie: natywną nazwę w tablicy countries, używane przez nią
+  waluty w tablicy currencies oraz dodaj jej populację do wartości population.
+✔ * Sprawdź języki przypisane do kraju. Użyj ich kodu iso639_1 jako klucza dla obiektu languages. Jeśli danego języka nie ma w obiekcie languages, przypisz do niego nowy obiekt o kluczach
+  countries(wartość początkowa: pusta arajka), population(0), area(0) oraz name(pusty string). Jeśli dany język znajduje się w obiekcie languages, dodaj do tablicy countries kod alpha3code
+  kraju, w którym jest używany, populację tego kraju do wartości population, obszar kraju do wartości area, a do name przypisz natywną nazwę tego języka.
+✔ * Jeśli kraj nie należy do żadnej z podanych wcześniej organizacji wykonaj kroki z poprzednich dwóch punktów, ale dane umieść w tablicy other.
+✔ * Jeśli kraj należy do więcej, niż jednej organizacji, umieść jego dane we wszystkich pasujących obiektach bloków. Blok other może się powtarzać.
+✔ * Dla każdej organizacji dane w tablicy currencies nie mogą się powtarzać.
+✔ * Dla każdej organizacji dane w tablicy countries powinny być posortowane alfabetycznie z do a.
+* Wyświetl w konsoli:
+ ✔- Nazwę organizacji o największej populacji,
+ ✔- Nazwę organizacji o drugiej największej gęstości zaludnienia,
+ ✔- Nazwę organizacji zajmującej trzeci największy obszar,
+ ✔- Nazwy organizacji o największej i najmniejszej przypisanej do nich liczbie języków,
+ ✔- Nazwę organizacji wykorzystującej największą liczbę walut,
+ ✔- Nazwę organizacji posiadającej najmniejszą liczbę państw członkowskich,
+ - Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
+ - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
+ - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
+* W przypadku remisów wyświetl wszystkich zwycięzców.
+*/
 },{"../task2/Task2":"src/task2/Task2.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
@@ -977,7 +1051,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58242" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58616" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

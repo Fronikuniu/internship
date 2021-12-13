@@ -1,3 +1,4 @@
+import { configuration } from '../config';
 import { Country } from '../types/interfaces';
 
 export const Task2 = async (localStorageCountriesData: Country[]) => {
@@ -24,7 +25,7 @@ export const Task2 = async (localStorageCountriesData: Country[]) => {
   const enterLimit: number = 5;
   const enterTypeLimit = 'population';
   const populateOfLimitedArray = calculateSumCountriesByType(arrayOfSortedCountries, enterTypeLimit, enterLimit);
-  const isBigger = populateOfLimitedArray > 500_000_000 ? '↗️ bigger' : '↘️ less';
+  const isBigger = populateOfLimitedArray > configuration.numberOfPopulate ? '↗️ bigger' : '↘️ less';
   console.log(
     `\n🔹 Countries of the ${enterCountryValueToSearchFor}, include '${enterPhraseToSearchFor.toUpperCase()}', sorted ${enterSortToSearchFor.toUpperCase()} and calculate population ➕: \n\n   Population ${enterLimit} countries is equal:`,
     populateOfLimitedArray,
@@ -34,33 +35,29 @@ export const Task2 = async (localStorageCountriesData: Country[]) => {
 
 export const getAllCountriesByTypeAndValue = (countries: Country[], types: string, value: string, containingOrNot: boolean) => {
   const typesData = types.split('.');
-  // I try use regex instead data[typesData[1]] === value but i getting different data
-  // const regex = new RegExp(value, 'gm');
-  // console.log(regex);
-  // regex.exec(data[typesData[1]])
 
-  return countries.filter((country: any) => {
+  return countries.filter((country: Country) => {
     const arrayPath = country[typesData[0]];
 
-    if (arrayPath) {
-      if (containingOrNot) {
-        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] === value);
-        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return arrayPath.includes(value);
-        return arrayPath === value;
-      } else {
-        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] !== value);
-        if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return !arrayPath.includes(value);
-        return arrayPath !== value;
-      }
+    if (!arrayPath) return false;
+
+    if (containingOrNot) {
+      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] === value);
+      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return arrayPath.includes(value);
+      return arrayPath === value;
+    } else {
+      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] !== value);
+      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return !arrayPath.includes(value);
+      return arrayPath !== value;
     }
   });
 };
 
-export const selectCountriesIncludesAnyLetter = (countries: any, type: string, value: string): Country[] => {
-  return countries.filter((country: any) => country[type].includes(value.toUpperCase()) || country[type].includes(value.toLowerCase()));
+export const selectCountriesIncludesAnyLetter = (countries: Country[], type: keyof Country, value: string): Country[] => {
+  return countries.filter((country) => country[type].toUpperCase().includes(value.toUpperCase()));
 };
 
-export const sortCountriesByType = (array: Country[], type: string, enterSortType: string): Country[] => {
+export const sortCountriesByType = (array: Country[], type: keyof Country, enterSortType: string): Country[] => {
   const sortArrayDesc = (first: any, next: any) => {
     return next[type] - first[type];
   };
@@ -69,20 +66,16 @@ export const sortCountriesByType = (array: Country[], type: string, enterSortTyp
     return first[type] - next[type];
   };
 
-  const sortArray: Country[] = [...array];
-
-  enterSortType === 'desc' ? sortArray.sort(sortArrayDesc) : sortArray.sort(sortArrayAsc);
-
-  return sortArray;
+  return enterSortType === 'desc' ? [...array].sort(sortArrayDesc) : [...array].sort(sortArrayAsc);
 };
 
-export const calculateSumCountriesByType = (countries: any, type: string, limit: number): number => {
+export const calculateSumCountriesByType = (countries: Country[], type: keyof Country, limit: number): number => {
   const limitedArray = countries.slice(0, limit);
 
-  let populate = 0;
-  limitedArray.forEach((country: any) => {
-    populate += country[type];
+  let sum = 0;
+  limitedArray.forEach((country: Country) => {
+    sum += country[type];
   });
 
-  return populate;
+  return sum;
 };

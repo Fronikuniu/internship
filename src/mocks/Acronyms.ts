@@ -1,6 +1,6 @@
-import { Acronyms } from '../types/interfaces';
+import { CountriesStats } from '../types/interfaces';
 
-export const acronyms: Acronyms = {
+export const countriesStatsMock: CountriesStats = {
   EU: {
     countries: [
       'Česká republika',

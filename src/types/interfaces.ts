@@ -30,14 +30,18 @@ type Translation = {
   [key: string]: string;
 };
 
-export type Acronyms = {
-  [key: string]: {
-    countries: string[];
-    population: number;
-    area: number;
-    languages: Languages;
-    currencies: string[];
-  };
+export type CountriesStats = {
+  [key in Block as string]: CountryStat;
+};
+
+export type Block = 'EU' | 'NAFTA' | 'AU' | 'other';
+
+export type CountryStat = {
+  countries: string[];
+  population: number;
+  area: number;
+  languages: Languages;
+  currencies: string[];
 };
 
 export type Languages = {
@@ -47,4 +51,11 @@ export type Languages = {
     area: number;
     name: string[];
   };
+};
+
+export type LangStat = {
+  countries: string[];
+  population: number;
+  area: number;
+  name: string[];
 };

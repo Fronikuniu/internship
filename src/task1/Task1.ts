@@ -4,7 +4,6 @@ import { Country } from '../types/interfaces';
 
 export const Task1 = async (localStorageCountriesData: Country[]) => {
   const currentDate = Date.now();
-  const msOf7Days = 604_800_000;
 
   // Check if the data is in the localStorage
   if (!localStorageCountriesData) {
@@ -26,7 +25,7 @@ export const Task1 = async (localStorageCountriesData: Country[]) => {
     const numericDateFromLocalStorage: number = lastSaveDate;
     const localStorageData: Country[] = localStorageCountriesData;
     const currDate: number = currentDate;
-    const nextUpdate: number = numericDateFromLocalStorage + msOf7Days;
+    const nextUpdate: number = numericDateFromLocalStorage + configuration.msOfDays;
 
     console.log('✔️ Data exist in localStorage ✔️');
     console.log('\n📅 Data of save:\n\n', new Date(numericDateFromLocalStorage));
@@ -47,14 +46,10 @@ export const Task1 = async (localStorageCountriesData: Country[]) => {
   }
 };
 
-export const compareData = (oldest: Country[], newest: Country[]): string[] => {
-  const changedData: string[] = [];
-
-  oldest.forEach((old, i) => {
+export const compareData = (oldest: Country[], newest: Country[]): Country[] => {
+  return oldest.filter((old, i) => {
     if (old.alpha2Code === newest[i].alpha2Code) {
-      old.population !== newest[i].population ? changedData.push(old.name) : null;
+      if (old.population !== newest[i].population) return old.name;
     }
   });
-
-  return changedData;
 };

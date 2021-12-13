@@ -40,7 +40,7 @@ export type Acronyms = {
   };
 };
 
-type Languages = {
+export type Languages = {
   [key: string]: {
     countries: string[];
     population: number;

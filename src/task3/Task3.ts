@@ -1,5 +1,5 @@
 import { getAllCountriesByTypeAndValue, sortCountriesByType } from '../task2/Task2';
-import { Acronyms, Country } from '../types/interfaces';
+import { Acronyms, Country, Languages } from '../types/interfaces';
 
 export const Task3 = (localStorageCountriesData: Country[]) => {
   const acronyms: Acronyms = {
@@ -53,10 +53,20 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
     '\n Smallest:',
     sortObject(acronyms, { value: 'languages', place: 1, sort: 'asc' })
   );
-  console.log('\n🔸 Name of the organization using the largest number of currencies:', sortObject(acronyms, { value: 'currencies', place: 1, sort: 'desc' })); //currencies need to add
+  console.log('\n🔸 Name of the organization using the largest number of currencies:', sortObject(acronyms, { value: 'currencies', place: 1, sort: 'desc' }));
   console.log('\n🔸 The name of the organization with the fewest number of member states:', sortObject(acronyms, { value: 'countries', place: 1, sort: 'asc' }));
 
-  console.log('\n🔸 EU, NAFTA, AU and other countries: \n', acronyms);
+  console.log('\n🔸 Native name of the language used in the greatest number of countries:', sortObjectLang(acronyms, { value: 'area', place: 1, sort: 'desc' }));
+  console.log('\n🔸 Native name of the language used by the smallest number of people:', sortObjectLang(acronyms, { value: 'population', place: 1, sort: 'asc' }));
+  console.log(
+    '\n🔸 Native names of the languages used in the largest and smallest area:\n',
+    'Largest:',
+    sortObjectLang(acronyms, { value: 'area', place: 1, sort: 'desc' }),
+    '\n Smallest:',
+    sortObjectLang(acronyms, { value: 'area', place: 1, sort: 'asc' })
+  );
+
+  console.log('\n🟠 EU, NAFTA, AU and other countries: \n', acronyms);
 };
 
 export const getCountriesDataAbout = (array: Country[], acronym: keyof Acronyms, acronyms: Acronyms) => {
@@ -93,27 +103,27 @@ export const getCountriesDataAbout = (array: Country[], acronym: keyof Acronyms,
   path.countries = path.countries.sort().reverse();
 };
 
-export const sortObject = (object: Acronyms, arg: { value: string; place: number; sort: string }) => {
-  const langKeys = Object.keys(object);
+export const sortObject = (object: Acronyms, arg: { value: keyof Acronyms; place: number; sort: string }): string => {
+  const countryKeys = Object.keys(object);
   const array: string[] | number[] = [];
   const index = arg.place - 1;
   const result: string[] = [];
 
-  langKeys.forEach((key) => {
+  countryKeys.forEach((key) => {
     const value = object[key][arg.value];
     const valueLength = Object.getOwnPropertyNames(value).length;
     if (typeof value === 'object') array.push(valueLength);
     if (typeof value !== 'object') array.push(value);
   });
 
-  let sortedArray: any = [];
+  let sortedArray: string[] | number[] = [];
   if (arg.sort === 'desc') {
     sortedArray = array.sort((a: any, b: any) => b - a);
   } else {
     sortedArray = array.sort((a: any, b: any) => a - b);
   }
 
-  langKeys.forEach((key) => {
+  countryKeys.forEach((key) => {
     const value = object[key][arg.value];
     const valueLength = Object.getOwnPropertyNames(value).length;
 
@@ -122,6 +132,47 @@ export const sortObject = (object: Acronyms, arg: { value: string; place: number
   });
 
   return result.toString();
+};
+
+const sortObjectLang = (object: Acronyms, arg: { value: keyof Acronyms; place: number; sort: string }) => {
+  const countryKeys = Object.keys(object);
+  const array: string[] | number[] = [];
+  const index = arg.place - 1;
+  const result: string[] = [];
+
+  countryKeys.forEach((countryKey) => {
+    const languagesKeys = Object.keys(object[countryKey].languages);
+
+    languagesKeys.forEach((langKey) => {
+      const value = object[countryKey].languages[langKey][arg.value];
+      const valueLength = value.length;
+      if (typeof value === 'object') array.push(valueLength);
+      if (typeof value !== 'object') array.push(value);
+    });
+  });
+
+  let sortedArray: string[] | number[] = [];
+  if (arg.sort === 'desc') {
+    sortedArray = array.sort((a: any, b: any) => b - a);
+  } else {
+    sortedArray = array.sort((a: any, b: any) => a - b);
+  }
+
+  countryKeys.forEach((countryKey) => {
+    const languagesKeys = Object.keys(object[countryKey].languages);
+
+    languagesKeys.forEach((langKey) => {
+      const value = object[countryKey].languages[langKey][arg.value];
+      const valueLength = value.length;
+
+      if (typeof value === 'object' && valueLength === sortedArray[index]) result.push(object[countryKey].languages[langKey].name[0]);
+      if (typeof value !== 'object' && value === sortedArray[index]) result.push(object[countryKey].languages[langKey].name[0]);
+    });
+  });
+
+  const set = new Set(result);
+  const endResult = Array.from(set);
+  return endResult.toString();
 };
 
 /*
@@ -143,8 +194,8 @@ export const sortObject = (object: Acronyms, arg: { value: string; place: number
  ✔- Nazwy organizacji o największej i najmniejszej przypisanej do nich liczbie języków,
  ✔- Nazwę organizacji wykorzystującej największą liczbę walut,
  ✔- Nazwę organizacji posiadającej najmniejszą liczbę państw członkowskich,
- - Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
- - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
- - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
-* W przypadku remisów wyświetl wszystkich zwycięzców.
+ ✔- Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
+ ✔- Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
+ ✔- Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
+✔ * W przypadku remisów wyświetl wszystkich zwycięzców.
 */

@@ -280,7 +280,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.getCountriesData = void 0;
 
 var getCountriesData = function getCountriesData() {
-  return __awaiter(void 0, void 0, void 0, function () {
+  return __awaiter(void 0, void 0, Promise, function () {
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
@@ -883,14 +883,32 @@ var Task3 = function Task3(localStorageCountriesData) {
     value: 'currencies',
     place: 1,
     sort: 'desc'
-  })); //currencies need to add
-
+  }));
   console.log('\n🔸 The name of the organization with the fewest number of member states:', exports.sortObject(acronyms, {
     value: 'countries',
     place: 1,
     sort: 'asc'
   }));
-  console.log('\n🔸 EU, NAFTA, AU and other countries: \n', acronyms);
+  console.log('\n🔸 Native name of the language used in the greatest number of countries:', sortObjectLang(acronyms, {
+    value: 'area',
+    place: 1,
+    sort: 'desc'
+  }));
+  console.log('\n🔸 Native name of the language used by the smallest number of people:', sortObjectLang(acronyms, {
+    value: 'population',
+    place: 1,
+    sort: 'asc'
+  }));
+  console.log('\n🔸 Native names of the languages used in the largest and smallest area:\n', 'Largest:', sortObjectLang(acronyms, {
+    value: 'area',
+    place: 1,
+    sort: 'desc'
+  }), '\n Smallest:', sortObjectLang(acronyms, {
+    value: 'area',
+    place: 1,
+    sort: 'asc'
+  }));
+  console.log('\n🟠 EU, NAFTA, AU and other countries: \n', acronyms);
 };
 
 exports.Task3 = Task3;
@@ -941,11 +959,11 @@ var getCountriesDataAbout = function getCountriesDataAbout(array, acronym, acron
 exports.getCountriesDataAbout = getCountriesDataAbout;
 
 var sortObject = function sortObject(object, arg) {
-  var langKeys = Object.keys(object);
+  var countryKeys = Object.keys(object);
   var array = [];
   var index = arg.place - 1;
   var result = [];
-  langKeys.forEach(function (key) {
+  countryKeys.forEach(function (key) {
     var value = object[key][arg.value];
     var valueLength = Object.getOwnPropertyNames(value).length;
     if (_typeof(value) === 'object') array.push(valueLength);
@@ -963,7 +981,7 @@ var sortObject = function sortObject(object, arg) {
     });
   }
 
-  langKeys.forEach(function (key) {
+  countryKeys.forEach(function (key) {
     var value = object[key][arg.value];
     var valueLength = Object.getOwnPropertyNames(value).length;
     if (_typeof(value) === 'object' && valueLength === sortedArray[index]) result.push(key);
@@ -973,6 +991,46 @@ var sortObject = function sortObject(object, arg) {
 };
 
 exports.sortObject = sortObject;
+
+var sortObjectLang = function sortObjectLang(object, arg) {
+  var countryKeys = Object.keys(object);
+  var array = [];
+  var index = arg.place - 1;
+  var result = [];
+  countryKeys.forEach(function (countryKey) {
+    var languagesKeys = Object.keys(object[countryKey].languages);
+    languagesKeys.forEach(function (langKey) {
+      var value = object[countryKey].languages[langKey][arg.value];
+      var valueLength = value.length;
+      if (_typeof(value) === 'object') array.push(valueLength);
+      if (_typeof(value) !== 'object') array.push(value);
+    });
+  });
+  var sortedArray = [];
+
+  if (arg.sort === 'desc') {
+    sortedArray = array.sort(function (a, b) {
+      return b - a;
+    });
+  } else {
+    sortedArray = array.sort(function (a, b) {
+      return a - b;
+    });
+  }
+
+  countryKeys.forEach(function (countryKey) {
+    var languagesKeys = Object.keys(object[countryKey].languages);
+    languagesKeys.forEach(function (langKey) {
+      var value = object[countryKey].languages[langKey][arg.value];
+      var valueLength = value.length;
+      if (_typeof(value) === 'object' && valueLength === sortedArray[index]) result.push(object[countryKey].languages[langKey].name[0]);
+      if (_typeof(value) !== 'object' && value === sortedArray[index]) result.push(object[countryKey].languages[langKey].name[0]);
+    });
+  });
+  var set = new Set(result);
+  var endResult = Array.from(set);
+  return endResult.toString();
+};
 /*
 ✔ * Stwórz nowy obiekt. Powinien on posiadać klucze EU, NAFTA, AU oraz other. Każdy z tych kluczy będzie zawierał obiekt o kluczach countries, population, languages oraz currencies.
   Wartościami countries oraz currencies są puste tablice, wartość population wynosi 0. Wartość languages to pusty obiekt.
@@ -992,10 +1050,10 @@ exports.sortObject = sortObject;
  ✔- Nazwy organizacji o największej i najmniejszej przypisanej do nich liczbie języków,
  ✔- Nazwę organizacji wykorzystującej największą liczbę walut,
  ✔- Nazwę organizacji posiadającej najmniejszą liczbę państw członkowskich,
- - Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
- - Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
- - Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
-* W przypadku remisów wyświetl wszystkich zwycięzców.
+ ✔- Natywną nazwę języka wykorzystywanego w największej liczbie krajów,
+ ✔- Natywną nazwę języka wykorzystywanego przez najmniejszą liczbę ludzi,
+ ✔- Natywne nazwy języków wykorzystywanych na największym i najmniejszym obszarze.
+✔ * W przypadku remisów wyświetl wszystkich zwycięzców.
 */
 },{"../task2/Task2":"src/task2/Task2.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
@@ -1051,7 +1109,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58616" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58496" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

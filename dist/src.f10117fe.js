@@ -804,6 +804,14 @@ var __assign = this && this.__assign || function () {
   return __assign.apply(this, arguments);
 };
 
+var __spreadArray = this && this.__spreadArray || function (to, from) {
+  for (var i = 0, il = from.length, j = to.length; i < il; i++, j++) {
+    to[j] = from[i];
+  }
+
+  return to;
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -830,10 +838,6 @@ var Task3 = function Task3(localStorageCountriesData) {
   var naftaCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'NAFTA', true);
   var auCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
   var countriesWithoutEuNaftaAu = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
-  console.log(euCountries);
-  console.log(naftaCountries);
-  console.log(auCountries);
-  console.log(countriesWithoutEuNaftaAu);
   exports.getCountriesDataAbout(euCountries, 'EU', countriesStats);
   exports.getCountriesDataAbout(naftaCountries, 'NAFTA', countriesStats);
   exports.getCountriesDataAbout(auCountries, 'AU', countriesStats);
@@ -898,14 +902,12 @@ exports.Task3 = Task3;
 
 var getCountriesDataAbout = function getCountriesDataAbout(array, acronym, object) {
   var path = object[acronym];
-  path.countries = [];
-  path.currencies = [];
   array.forEach(function (country) {
     var _a;
 
-    path.countries.push(country.nativeName);
+    path.countries = __spreadArray(__spreadArray([], path.countries), [country.nativeName]);
     (_a = country.currencies) === null || _a === void 0 ? void 0 : _a.every(function (currencie) {
-      return path.currencies.push(currencie.name);
+      return path.currencies = __spreadArray(__spreadArray([], path.currencies), [currencie.name]);
     });
     path.population += country.population;
     typeof country.area === 'number' && (path.area += country.area);

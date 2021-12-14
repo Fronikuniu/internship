@@ -22,11 +22,6 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
   const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
   const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
 
-  console.log(euCountries);
-  console.log(naftaCountries);
-  console.log(auCountries);
-  console.log(countriesWithoutEuNaftaAu);
-
   getCountriesDataAbout(euCountries, 'EU', countriesStats);
   getCountriesDataAbout(naftaCountries, 'NAFTA', countriesStats);
   getCountriesDataAbout(auCountries, 'AU', countriesStats);
@@ -59,12 +54,10 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
 
 export const getCountriesDataAbout = (array: Country[], acronym: keyof CountriesStats, object: CountriesStats) => {
   const path = object[acronym];
-  path.countries = [];
-  path.currencies = [];
 
   array.forEach((country) => {
-    path.countries.push(country.nativeName);
-    country.currencies?.every((currencie) => path.currencies.push(currencie.name));
+    path.countries = [...path.countries, country.nativeName];
+    country.currencies?.every((currencie) => (path.currencies = [...path.currencies, currencie.name]));
     path.population += country.population;
     typeof country.area === 'number' && (path.area += country.area);
 

@@ -819,10 +819,10 @@ var countryStat = {
   area: 0
 };
 var countriesStats = {
-  EU: countryStat,
-  NAFTA: countryStat,
-  AU: countryStat,
-  other: countryStat
+  EU: __assign({}, countryStat),
+  NAFTA: __assign({}, countryStat),
+  AU: __assign({}, countryStat),
+  other: __assign({}, countryStat)
 };
 
 var Task3 = function Task3(localStorageCountriesData) {
@@ -830,6 +830,10 @@ var Task3 = function Task3(localStorageCountriesData) {
   var naftaCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'NAFTA', true);
   var auCountries = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
   var countriesWithoutEuNaftaAu = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
+  console.log(euCountries);
+  console.log(naftaCountries);
+  console.log(auCountries);
+  console.log(countriesWithoutEuNaftaAu);
   exports.getCountriesDataAbout(euCountries, 'EU', countriesStats);
   exports.getCountriesDataAbout(naftaCountries, 'NAFTA', countriesStats);
   exports.getCountriesDataAbout(auCountries, 'AU', countriesStats);
@@ -894,6 +898,8 @@ exports.Task3 = Task3;
 
 var getCountriesDataAbout = function getCountriesDataAbout(array, acronym, object) {
   var path = object[acronym];
+  path.countries = [];
+  path.currencies = [];
   array.forEach(function (country) {
     var _a;
 

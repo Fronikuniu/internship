@@ -10,10 +10,10 @@ const countryStat: CountryStat = {
 };
 
 const countriesStats: CountriesStats = {
-  EU: countryStat,
-  NAFTA: countryStat,
-  AU: countryStat,
-  other: countryStat,
+  EU: { ...countryStat },
+  NAFTA: { ...countryStat },
+  AU: { ...countryStat },
+  other: { ...countryStat },
 };
 
 export const Task3 = (localStorageCountriesData: Country[]) => {
@@ -21,6 +21,11 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
   const naftaCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'NAFTA', true);
   const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
   const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
+
+  console.log(euCountries);
+  console.log(naftaCountries);
+  console.log(auCountries);
+  console.log(countriesWithoutEuNaftaAu);
 
   getCountriesDataAbout(euCountries, 'EU', countriesStats);
   getCountriesDataAbout(naftaCountries, 'NAFTA', countriesStats);
@@ -54,6 +59,8 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
 
 export const getCountriesDataAbout = (array: Country[], acronym: keyof CountriesStats, object: CountriesStats) => {
   const path = object[acronym];
+  path.countries = [];
+  path.currencies = [];
 
   array.forEach((country) => {
     path.countries.push(country.nativeName);

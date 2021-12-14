@@ -10,13 +10,13 @@ export const Task2 = async (localStorageCountriesData: Country[]) => {
   console.log(`\n🔹 Countries of the ${enterCountryValueToSearchFor}: \n`, arrayOfCountries);
 
   // From all EU countries take countries which include any letter
-  const enterPhrasePathToSearchFor: string = 'name';
+  const enterPhrasePathToSearchFor = 'name';
   const enterPhraseToSearchFor: string = 'a';
   const arrayOfCountriesContainingPhrase: Country[] | string = selectCountriesIncludesAnyLetter(arrayOfCountries, enterPhrasePathToSearchFor, enterPhraseToSearchFor);
   console.log(`\n🔹 Countries of the ${enterCountryValueToSearchFor}, include '${enterPhraseToSearchFor.toUpperCase()}':\n`, arrayOfCountriesContainingPhrase);
 
   // From all EU countries take countries which include 'a' and sort descending
-  const enterSortPathToSearchFor: string = 'population';
+  const enterSortPathToSearchFor = 'population';
   const enterSortToSearchFor: 'desc' | 'asc' = 'desc';
   const arrayOfSortedCountries = sortCountriesByType(arrayOfCountriesContainingPhrase, enterSortPathToSearchFor, enterSortToSearchFor);
   console.log(`\n🔹 Countries of the ${enterCountryValueToSearchFor}, include '${enterPhraseToSearchFor.toUpperCase()}', sorted ${enterSortToSearchFor.toUpperCase()}: \n`, arrayOfSortedCountries);
@@ -33,7 +33,7 @@ export const Task2 = async (localStorageCountriesData: Country[]) => {
   );
 };
 
-export const getAllCountriesByTypeAndValue = (countries: Country[], types: string, value: string, containingOrNot: boolean) => {
+export const getAllCountriesByTypeAndValue = (countries: Country[], types: string, value: string, containingOrNot: boolean): Country[] => {
   const typesData = types.split('.');
 
   return countries.filter((country: Country) => {
@@ -41,13 +41,16 @@ export const getAllCountriesByTypeAndValue = (countries: Country[], types: strin
 
     if (!arrayPath) return false;
 
+    const isStringArray = Array.isArray(arrayPath) && typeof arrayPath[0] === 'string';
+    const isObjectArray = Array.isArray(arrayPath) && typeof arrayPath[0] === 'object';
+
     if (containingOrNot) {
-      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] === value);
-      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return arrayPath.includes(value);
+      if (isObjectArray) return arrayPath.some((data) => data[typesData[1]] === value);
+      if (isStringArray) return arrayPath.includes(value);
       return arrayPath === value;
     } else {
-      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'object') return arrayPath.some((data) => data[typesData[1]] !== value);
-      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return !arrayPath.includes(value);
+      if (isObjectArray) return arrayPath.some((data) => data[typesData[1]] !== value);
+      if (isStringArray) return !arrayPath.includes(value);
       return arrayPath !== value;
     }
   });

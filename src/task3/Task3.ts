@@ -1,35 +1,19 @@
 import { getAllCountriesByTypeAndValue } from '../task2/Task2';
-import { Block, CountriesStats, Country, CountryStat, LangStat, Languages } from '../types/interfaces';
+import { CountriesStats, Country, CountryStat, LangStat } from '../types/interfaces';
+
+const countryStat: CountryStat = {
+  countries: [],
+  population: 0,
+  languages: {},
+  currencies: [],
+  area: 0,
+};
 
 const countriesStats: CountriesStats = {
-  EU: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0,
-  },
-  NAFTA: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0,
-  },
-  AU: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0,
-  },
-  other: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0,
-  },
+  EU: countryStat,
+  NAFTA: countryStat,
+  AU: countryStat,
+  other: countryStat,
 };
 
 export const Task3 = (localStorageCountriesData: Country[]) => {
@@ -115,12 +99,7 @@ export const sortObject = (object: CountriesStats, arg: { value: keyof CountrySt
     if (typeof value !== 'object') arrayOfValues.push(value);
   });
 
-  let sortedArrayOfValues: string[] | number[] = [];
-  if (arg.sort === 'desc') {
-    sortedArrayOfValues = arrayOfValues.sort((a: any, b: any) => b - a);
-  } else {
-    sortedArrayOfValues = arrayOfValues.sort((a: any, b: any) => a - b);
-  }
+  const sortedArrayOfValues: string[] | number[] = sortArrayOfValues(arg.sort, arrayOfValues);
 
   countryKeys.forEach((key) => {
     const value = object[key][arg.value];
@@ -133,7 +112,7 @@ export const sortObject = (object: CountriesStats, arg: { value: keyof CountrySt
   return result.toString();
 };
 
-const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; place: number; sort: string }) => {
+const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; place: number; sort: string }): string => {
   const countryKeys = Object.keys(object);
   const arrayOfValues: string[] | number[] = [];
   const index = arg.place - 1;
@@ -144,18 +123,13 @@ const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; pl
 
     languagesKeys.forEach((langKey) => {
       const value = object[countryKey].languages[langKey][arg.value];
-      const valueLength = value.length;
+      const valueLength: number = value.length;
       if (Array.isArray(value)) arrayOfValues.push(valueLength);
       if (typeof value !== 'object') arrayOfValues.push(value);
     });
   });
 
-  let sortedArrayOfValues: string[] | number[] = [];
-  if (arg.sort === 'desc') {
-    sortedArrayOfValues = arrayOfValues.sort((a: any, b: any) => b - a);
-  } else {
-    sortedArrayOfValues = arrayOfValues.sort((a: any, b: any) => a - b);
-  }
+  const sortedArrayOfValues: string[] | number[] = sortArrayOfValues(arg.sort, arrayOfValues);
 
   countryKeys.forEach((countryKey) => {
     const languagesKeys = Object.keys(object[countryKey].languages);
@@ -172,4 +146,12 @@ const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; pl
   const set = new Set(result);
   const endResult = Array.from(set);
   return endResult.toString();
+};
+
+const sortArrayOfValues = (sort: string, array: string[] | number[]): string[] | number[] => {
+  if (sort === 'desc') {
+    return array.sort((a: any, b: any) => b - a);
+  } else {
+    return array.sort((a: any, b: any) => a - b);
+  }
 };

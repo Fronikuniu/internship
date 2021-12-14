@@ -730,18 +730,20 @@ var getAllCountriesByTypeAndValue = function getAllCountriesByTypeAndValue(count
   return countries.filter(function (country) {
     var arrayPath = country[typesData[0]];
     if (!arrayPath) return false;
+    var isStringArray = Array.isArray(arrayPath) && typeof arrayPath[0] === 'string';
+    var isObjectArray = Array.isArray(arrayPath) && _typeof(arrayPath[0]) === 'object';
 
     if (containingOrNot) {
-      if (Array.isArray(arrayPath) && _typeof(arrayPath[0]) === 'object') return arrayPath.some(function (data) {
+      if (isObjectArray) return arrayPath.some(function (data) {
         return data[typesData[1]] === value;
       });
-      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return arrayPath.includes(value);
+      if (isStringArray) return arrayPath.includes(value);
       return arrayPath === value;
     } else {
-      if (Array.isArray(arrayPath) && _typeof(arrayPath[0]) === 'object') return arrayPath.some(function (data) {
+      if (isObjectArray) return arrayPath.some(function (data) {
         return data[typesData[1]] !== value;
       });
-      if (Array.isArray(arrayPath) && typeof arrayPath[0] === 'string') return !arrayPath.includes(value);
+      if (isStringArray) return !arrayPath.includes(value);
       return arrayPath !== value;
     }
   });
@@ -809,35 +811,18 @@ exports.sortObject = exports.getCountriesDataAbout = exports.Task3 = void 0;
 
 var Task2_1 = require("../task2/Task2");
 
+var countryStat = {
+  countries: [],
+  population: 0,
+  languages: {},
+  currencies: [],
+  area: 0
+};
 var countriesStats = {
-  EU: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0
-  },
-  NAFTA: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0
-  },
-  AU: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0
-  },
-  other: {
-    countries: [],
-    population: 0,
-    languages: {},
-    currencies: [],
-    area: 0
-  }
+  EU: countryStat,
+  NAFTA: countryStat,
+  AU: countryStat,
+  other: countryStat
 };
 
 var Task3 = function Task3(localStorageCountriesData) {
@@ -963,18 +948,7 @@ var sortObject = function sortObject(object, arg) {
     if (_typeof(value) === 'object') arrayOfValues.push(valueLength);
     if (_typeof(value) !== 'object') arrayOfValues.push(value);
   });
-  var sortedArrayOfValues = [];
-
-  if (arg.sort === 'desc') {
-    sortedArrayOfValues = arrayOfValues.sort(function (a, b) {
-      return b - a;
-    });
-  } else {
-    sortedArrayOfValues = arrayOfValues.sort(function (a, b) {
-      return a - b;
-    });
-  }
-
+  var sortedArrayOfValues = sortArrayOfValues(arg.sort, arrayOfValues);
   countryKeys.forEach(function (key) {
     var value = object[key][arg.value];
     var valueLength = Object.getOwnPropertyNames(value).length;
@@ -1000,18 +974,7 @@ var sortObjectLang = function sortObjectLang(object, arg) {
       if (_typeof(value) !== 'object') arrayOfValues.push(value);
     });
   });
-  var sortedArrayOfValues = [];
-
-  if (arg.sort === 'desc') {
-    sortedArrayOfValues = arrayOfValues.sort(function (a, b) {
-      return b - a;
-    });
-  } else {
-    sortedArrayOfValues = arrayOfValues.sort(function (a, b) {
-      return a - b;
-    });
-  }
-
+  var sortedArrayOfValues = sortArrayOfValues(arg.sort, arrayOfValues);
   countryKeys.forEach(function (countryKey) {
     var languagesKeys = Object.keys(object[countryKey].languages);
     languagesKeys.forEach(function (langKey) {
@@ -1024,6 +987,18 @@ var sortObjectLang = function sortObjectLang(object, arg) {
   var set = new Set(result);
   var endResult = Array.from(set);
   return endResult.toString();
+};
+
+var sortArrayOfValues = function sortArrayOfValues(sort, array) {
+  if (sort === 'desc') {
+    return array.sort(function (a, b) {
+      return b - a;
+    });
+  } else {
+    return array.sort(function (a, b) {
+      return a - b;
+    });
+  }
 };
 },{"../task2/Task2":"src/task2/Task2.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
@@ -1079,7 +1054,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58496" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56586" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

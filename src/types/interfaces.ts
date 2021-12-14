@@ -45,12 +45,7 @@ export type CountryStat = {
 };
 
 export type Languages = {
-  [key: string]: {
-    countries: string[];
-    population: number;
-    area: number;
-    name: string[];
-  };
+  [key: string]: LangStat;
 };
 
 export type LangStat = {

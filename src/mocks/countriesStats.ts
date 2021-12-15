@@ -138,3 +138,218 @@ export const countriesStatsMock: CountriesStats = {
     area: 109094936,
   },
 };
+
+export const countriesMock = {
+  EU: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+  NAFTA: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+  AU: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+  other: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+};
+
+export const euCountriesMock: CountriesStats = {
+  EU: {
+    countries: ['Polska', 'Deutschland'],
+    population: 121191327,
+    languages: {
+      pl: {
+        area: 312679,
+        countries: ['POL'],
+        name: ['język polski'],
+        population: 37950802,
+      },
+      de: {
+        area: 357114,
+        countries: ['DEU'],
+        name: ['Deutsch'],
+        population: 83240525,
+      },
+    },
+    currencies: ['Polish złoty', 'Euro'],
+    area: 669793,
+  },
+  NAFTA: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+  AU: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+  other: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+};
+
+export const otherCountriesMock = {
+  EU: {
+    countries: ['Polska', 'Deutschland'],
+    population: 121191327,
+    languages: {
+      pl: {
+        area: 312679,
+        countries: ['POL'],
+        name: ['język polski'],
+        population: 37950802,
+      },
+      de: {
+        area: 357114,
+        countries: ['DEU'],
+        name: ['Deutsch'],
+        population: 83240525,
+      },
+    },
+    currencies: ['Polish złoty', 'Euro'],
+    area: 669793,
+  },
+  NAFTA: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+  AU: {
+    countries: [],
+    population: 0,
+    languages: {},
+    currencies: [],
+    area: 0,
+  },
+  other: {
+    countries: ['افغانستان'],
+    population: 38928341,
+    languages: {
+      ps: {
+        area: 652230,
+        countries: ['AFG'],
+        name: ['پښتو'],
+        population: 38928341,
+      },
+      uz: {
+        area: 652230,
+        countries: ['AFG'],
+        name: ['Oʻzbek'],
+        population: 38928341,
+      },
+      tk: {
+        area: 652230,
+        countries: ['AFG'],
+        name: ['Türkmen'],
+        population: 38928341,
+      },
+    },
+    currencies: ['Afghan afghani'],
+    area: 652230,
+  },
+};
+
+export const sortCountriesObjectMock = {
+  EU: {
+    countries: ['Polska', 'Deutschland'],
+    population: 121191327,
+    languages: {
+      pl: {
+        area: 312679,
+        countries: ['POL'],
+        name: ['język polski'],
+        population: 37950802,
+      },
+      de: {
+        area: 357114,
+        countries: ['DEU'],
+        name: ['Deutsch'],
+        population: 83240525,
+      },
+    },
+    currencies: ['Polish złoty', 'Euro'],
+    area: 669793,
+  },
+  NAFTA: {
+    countries: ['United States'],
+    population: 329484123,
+    languages: {
+      en: {
+        area: 9629091,
+        countries: ['USA', 'CAN'],
+        name: ['English', 'English'],
+        population: 329484123,
+      },
+    },
+    currencies: ['United States dollar'],
+    area: 9629091,
+  },
+  AU: {
+    countries: ['Togo'],
+    population: 8278737,
+    languages: {
+      fr: {
+        area: 56785,
+        countries: ['TGO'],
+        name: ['français'],
+        population: 8278737,
+      },
+    },
+    currencies: ['West African CFA franc'],
+    area: 56785,
+  },
+  other: {
+    countries: ['افغانستان'],
+    population: 38928341,
+    languages: {
+      ps: {
+        area: 652230,
+        countries: ['AFG'],
+        name: ['پښتو'],
+        population: 38928341,
+      },
+      uz: {
+        area: 652230,
+        countries: ['AFG'],
+        name: ['Oʻzbek'],
+        population: 38928341,
+      },
+      tk: {
+        area: 652230,
+        countries: ['AFG'],
+        name: ['Türkmen'],
+        population: 38928341,
+      },
+    },
+    currencies: ['Afghan afghani'],
+    area: 652230,
+  },
+};

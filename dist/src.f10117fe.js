@@ -835,7 +835,7 @@ var __spreadArray = this && this.__spreadArray || function (to, from) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sortObject = exports.getCountryStats = exports.Task3 = void 0;
+exports.sortObjectLang = exports.sortObject = exports.getCountryStats = exports.Task3 = void 0;
 
 var Task2_1 = require("../task2/Task2");
 
@@ -867,10 +867,12 @@ var Task3 = function Task3(localStorageCountriesData) {
     value: 'AU',
     contain: true
   });
-  var countriesWithoutEuNaftaAu = Task2_1.getAllCountriesByTypeAndValue(localStorageCountriesData, {
-    path: 'regionalBlocs.acronym',
-    value: 'AU EU NAFTA',
-    contain: false
+  var countriesWithoutEuNaftaAu = localStorageCountriesData.filter(function (country) {
+    var _a;
+
+    return (_a = country.regionalBlocs) === null || _a === void 0 ? void 0 : _a.some(function (bloc) {
+      return !['EU', 'NAFTA', 'AU'].includes(bloc.acronym);
+    });
   });
   exports.getCountryStats(euCountries, {
     acronym: 'EU',
@@ -922,21 +924,21 @@ var Task3 = function Task3(localStorageCountriesData) {
     place: 1,
     sort: 'asc'
   }));
-  console.log('\n🔸 Native name of the language used in the greatest number of countries:', sortObjectLang(countriesStats, {
+  console.log('\n🔸 Native name of the language used in the greatest number of countries:', exports.sortObjectLang(countriesStats, {
     value: 'area',
     place: 1,
     sort: 'desc'
   }));
-  console.log('\n🔸 Native name of the language used by the smallest number of people:', sortObjectLang(countriesStats, {
+  console.log('\n🔸 Native name of the language used by the smallest number of people:', exports.sortObjectLang(countriesStats, {
     value: 'population',
     place: 1,
     sort: 'asc'
   }));
-  console.log('\n🔸 Native names of the languages used in the largest and smallest area:\n', 'Largest:', sortObjectLang(countriesStats, {
+  console.log('\n🔸 Native names of the languages used in the largest and smallest area:\n', 'Largest:', exports.sortObjectLang(countriesStats, {
     value: 'area',
     place: 1,
     sort: 'desc'
-  }), '\n Smallest:', sortObjectLang(countriesStats, {
+  }), '\n Smallest:', exports.sortObjectLang(countriesStats, {
     value: 'area',
     place: 1,
     sort: 'asc'
@@ -965,21 +967,21 @@ var getCountryStats = function getCountryStats(array, arg) {
       var _a;
 
       if (lang === langKeys[i]) {
-        path.languages[lang].countries.push(country.languages[i].nativeName);
-        path.languages[lang].name.push(country.alpha3Code);
+        path.languages[lang].name.push(country.languages[i].nativeName);
+        path.languages[lang].countries.push(country.alpha3Code);
         path.languages[lang].area += country.area;
         path.languages[lang].population += country.population;
       } else {
         var language = country.languages[i].iso639_1;
-        var countries = country.alpha3Code;
-        var name = country.languages[i].nativeName;
+        var name = country.alpha3Code;
+        var nativeName = country.languages[i].nativeName;
         var area = country.area;
         var population = country.population;
         path.languages = __assign(__assign({}, path.languages), (_a = {}, _a[language] = {
           population: population,
           area: area,
-          name: [name],
-          countries: [countries]
+          name: [nativeName],
+          countries: [name]
         }, _a));
       }
     });
@@ -987,6 +989,7 @@ var getCountryStats = function getCountryStats(array, arg) {
   var unique = new Set(path.currencies);
   path.currencies = Array.from(unique);
   path.countries = path.countries.sort().reverse();
+  return arg.object;
 };
 
 exports.getCountryStats = getCountryStats;
@@ -1002,7 +1005,8 @@ var sortObject = function sortObject(object, arg) {
     if (_typeof(value) === 'object') arrayOfValues.push(valueLength);
     if (_typeof(value) !== 'object') arrayOfValues.push(value);
   });
-  var sortedArrayOfValues = sortArrayOfValues(arg.sort, arrayOfValues);
+  var sortedSetOfValues = new Set(sortArrayOfValues(arg.sort, arrayOfValues));
+  var sortedArrayOfValues = Array.from(sortedSetOfValues);
   countryKeys.forEach(function (key) {
     var value = object[key][arg.value];
     var valueLength = Object.getOwnPropertyNames(value).length;
@@ -1023,17 +1027,18 @@ var sortObjectLang = function sortObjectLang(object, arg) {
     var languagesKeys = Object.keys(object[countryKey].languages);
     languagesKeys.forEach(function (langKey) {
       var value = object[countryKey].languages[langKey][arg.value];
-      var valueLength = value.length;
+      var valueLength = Array.isArray(value) && value.length;
       if (Array.isArray(value)) arrayOfValues.push(valueLength);
       if (_typeof(value) !== 'object') arrayOfValues.push(value);
     });
   });
-  var sortedArrayOfValues = sortArrayOfValues(arg.sort, arrayOfValues);
+  var sortedSetOfValues = new Set(sortArrayOfValues(arg.sort, arrayOfValues));
+  var sortedArrayOfValues = Array.from(sortedSetOfValues);
   countryKeys.forEach(function (countryKey) {
     var languagesKeys = Object.keys(object[countryKey].languages);
     languagesKeys.forEach(function (langKey) {
       var value = object[countryKey].languages[langKey][arg.value];
-      var valueLength = value.length;
+      var valueLength = Array.isArray(value) && value.length;
       if (_typeof(value) === 'object' && valueLength === sortedArrayOfValues[index]) result.push(object[countryKey].languages[langKey].name[0]);
       if (_typeof(value) !== 'object' && value === sortedArrayOfValues[index]) result.push(object[countryKey].languages[langKey].name[0]);
     });
@@ -1042,6 +1047,8 @@ var sortObjectLang = function sortObjectLang(object, arg) {
   var endResult = Array.from(set);
   return endResult.toString();
 };
+
+exports.sortObjectLang = sortObjectLang;
 
 var sortArrayOfValues = function sortArrayOfValues(sort, array) {
   if (sort === 'desc') {

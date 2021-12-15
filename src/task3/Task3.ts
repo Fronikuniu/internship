@@ -16,7 +16,7 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
   const euCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'EU', contain: true });
   const naftaCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'NAFTA', contain: true });
   const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'AU', contain: true });
-  const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'AU EU NAFTA', contain: false });
+  const countriesWithoutEuNaftaAu: Country[] = localStorageCountriesData.filter((country) => country.regionalBlocs?.some((bloc) => !['EU', 'NAFTA', 'AU'].includes(bloc.acronym)));
 
   getCountryStats(euCountries, { acronym: 'EU', object: countriesStats });
   getCountryStats(naftaCountries, { acronym: 'NAFTA', object: countriesStats });
@@ -62,17 +62,17 @@ export const getCountryStats = (array: Country[], arg: { acronym: keyof Countrie
 
     countryLang.forEach((lang, i) => {
       if (lang === langKeys[i]) {
-        path.languages[lang].countries.push(country.languages[i].nativeName);
-        path.languages[lang].name.push(country.alpha3Code);
+        path.languages[lang].name.push(country.languages[i].nativeName);
+        path.languages[lang].countries.push(country.alpha3Code);
         path.languages[lang].area += country.area;
         path.languages[lang].population += country.population;
       } else {
         const language = country.languages[i].iso639_1;
-        const countries = country.alpha3Code;
-        const name = country.languages[i].nativeName;
+        const name = country.alpha3Code;
+        const nativeName = country.languages[i].nativeName;
         const area = country.area;
         const population = country.population;
-        path.languages = { ...path.languages, ...{ [language]: { population, area, name: [name], countries: [countries] } } };
+        path.languages = { ...path.languages, ...{ [language]: { population, area, name: [nativeName], countries: [name] } } };
       }
     });
   });
@@ -80,6 +80,8 @@ export const getCountryStats = (array: Country[], arg: { acronym: keyof Countrie
   const unique = new Set(path.currencies);
   path.currencies = Array.from(unique);
   path.countries = path.countries.sort().reverse();
+
+  return arg.object;
 };
 
 export const sortObject = (object: CountriesStats, arg: { value: keyof CountryStat; place: number; sort: string }): string => {
@@ -95,7 +97,8 @@ export const sortObject = (object: CountriesStats, arg: { value: keyof CountrySt
     if (typeof value !== 'object') arrayOfValues.push(value);
   });
 
-  const sortedArrayOfValues: string[] | number[] = sortArrayOfValues(arg.sort, arrayOfValues);
+  const sortedSetOfValues: any = new Set(sortArrayOfValues(arg.sort, arrayOfValues));
+  const sortedArrayOfValues = Array.from(sortedSetOfValues);
 
   countryKeys.forEach((key) => {
     const value = object[key][arg.value];
@@ -108,7 +111,7 @@ export const sortObject = (object: CountriesStats, arg: { value: keyof CountrySt
   return result.toString();
 };
 
-const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; place: number; sort: string }): string => {
+export const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; place: number; sort: string }): string => {
   const countryKeys = Object.keys(object);
   const arrayOfValues: string[] | number[] = [];
   const index = arg.place - 1;
@@ -119,20 +122,21 @@ const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; pl
 
     languagesKeys.forEach((langKey) => {
       const value = object[countryKey].languages[langKey][arg.value];
-      const valueLength: number = value.length;
+      const valueLength = Array.isArray(value) && value.length;
       if (Array.isArray(value)) arrayOfValues.push(valueLength);
       if (typeof value !== 'object') arrayOfValues.push(value);
     });
   });
 
-  const sortedArrayOfValues: string[] | number[] = sortArrayOfValues(arg.sort, arrayOfValues);
+  const sortedSetOfValues: any = new Set(sortArrayOfValues(arg.sort, arrayOfValues));
+  const sortedArrayOfValues = Array.from(sortedSetOfValues);
 
   countryKeys.forEach((countryKey) => {
     const languagesKeys = Object.keys(object[countryKey].languages);
 
     languagesKeys.forEach((langKey) => {
       const value = object[countryKey].languages[langKey][arg.value];
-      const valueLength = value.length;
+      const valueLength = Array.isArray(value) && value.length;
 
       if (typeof value === 'object' && valueLength === sortedArrayOfValues[index]) result.push(object[countryKey].languages[langKey].name[0]);
       if (typeof value !== 'object' && value === sortedArrayOfValues[index]) result.push(object[countryKey].languages[langKey].name[0]);

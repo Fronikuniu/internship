@@ -1,4 +1,4 @@
-import { countriesStatsMock } from '../mocks/Acronyms';
+import { countriesStatsMock } from '../mocks/countriesStats';
 import { sortObject } from './Task3';
 
 describe('Tests for Task 2: Select only [type] that belong to the [value]', () => {

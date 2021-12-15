@@ -7,7 +7,7 @@ describe('Tests for Task 2: Sort array countries by [type] and [sort type]', () 
     const sortedArrayNamesDesc = ['Germany', 'France', 'Afghanistan', 'Poland', 'Togo'];
 
     arrayToSort.forEach((_, i) => {
-      expect(sortCountriesByType(arrayToSort, 'population', 'desc')[i].name).toBe(sortedArrayNamesDesc[i]);
+      expect(sortCountriesByType(arrayToSort, { path: 'population', sortType: 'desc' })[i].name).toBe(sortedArrayNamesDesc[i]);
     });
   });
 
@@ -16,7 +16,7 @@ describe('Tests for Task 2: Sort array countries by [type] and [sort type]', () 
     const sortedArrayNamesAsc = ['Togo', 'Poland', 'Afghanistan', 'France', 'Germany'];
 
     arrayToSort.forEach((_, i) => {
-      expect(sortCountriesByType(arrayToSort, 'population', 'asc')[i].name).toBe(sortedArrayNamesAsc[i]);
+      expect(sortCountriesByType(arrayToSort, { path: 'population', sortType: 'asc' })[i].name).toBe(sortedArrayNamesAsc[i]);
     });
   });
 
@@ -25,7 +25,7 @@ describe('Tests for Task 2: Sort array countries by [type] and [sort type]', () 
     const sortedArrayNamesAsc = ['Afghanistan', 'France', 'Germany', 'Poland', 'Togo'];
 
     arrayToSort.forEach((_, i) => {
-      expect(sortCountriesByType(arrayToSort, 'area', 'desc')[i].name).toBe(sortedArrayNamesAsc[i]);
+      expect(sortCountriesByType(arrayToSort, { path: 'area', sortType: 'desc' })[i].name).toBe(sortedArrayNamesAsc[i]);
     });
   });
 
@@ -34,7 +34,7 @@ describe('Tests for Task 2: Sort array countries by [type] and [sort type]', () 
     const sortedArrayNamesAsc = ['Togo', 'Poland', 'Germany', 'France', 'Afghanistan'];
 
     arrayToSort.forEach((_, i) => {
-      expect(sortCountriesByType(arrayToSort, 'area', 'asc')[i].name).toBe(sortedArrayNamesAsc[i]);
+      expect(sortCountriesByType(arrayToSort, { path: 'area', sortType: 'asc' })[i].name).toBe(sortedArrayNamesAsc[i]);
     });
   });
 });

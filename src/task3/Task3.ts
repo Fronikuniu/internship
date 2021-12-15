@@ -8,24 +8,20 @@ const countryStat: CountryStat = {
   currencies: [],
   area: 0,
 };
+const countriesStats: CountriesStats = {};
 
-const countriesStats: CountriesStats = {
-  EU: { ...countryStat },
-  NAFTA: { ...countryStat },
-  AU: { ...countryStat },
-  other: { ...countryStat },
-};
+['EU', 'NAFTA', 'AU', 'other'].forEach((country) => (countriesStats[country] = { ...countryStat }));
 
 export const Task3 = (localStorageCountriesData: Country[]) => {
-  const euCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'EU', true);
-  const naftaCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'NAFTA', true);
-  const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU', true);
-  const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, 'regionalBlocs.acronym', 'AU EU NAFTA', false);
+  const euCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'EU', contain: true });
+  const naftaCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'NAFTA', contain: true });
+  const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'AU', contain: true });
+  const countriesWithoutEuNaftaAu: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'AU EU NAFTA', contain: false });
 
-  getCountriesDataAbout(euCountries, 'EU', countriesStats);
-  getCountriesDataAbout(naftaCountries, 'NAFTA', countriesStats);
-  getCountriesDataAbout(auCountries, 'AU', countriesStats);
-  getCountriesDataAbout(countriesWithoutEuNaftaAu, 'other', countriesStats);
+  getCountryStats(euCountries, { acronym: 'EU', object: countriesStats });
+  getCountryStats(naftaCountries, { acronym: 'NAFTA', object: countriesStats });
+  getCountryStats(auCountries, { acronym: 'AU', object: countriesStats });
+  getCountryStats(countriesWithoutEuNaftaAu, { acronym: 'other', object: countriesStats });
 
   console.log('\n🔸 The name of the organization with the largest population:', sortObject(countriesStats, { value: 'population', place: 1, sort: 'desc' }));
   console.log('\n🔸 Name of the organization with the second largest population:', sortObject(countriesStats, { value: 'population', place: 2, sort: 'desc' }));
@@ -52,8 +48,8 @@ export const Task3 = (localStorageCountriesData: Country[]) => {
   console.log('\n🟠 EU, NAFTA, AU and other countries: \n', countriesStats);
 };
 
-export const getCountriesDataAbout = (array: Country[], acronym: keyof CountriesStats, object: CountriesStats) => {
-  const path = object[acronym];
+export const getCountryStats = (array: Country[], arg: { acronym: keyof CountriesStats; object: CountriesStats }) => {
+  const path = arg.object[arg.acronym];
 
   array.forEach((country) => {
     path.countries = [...path.countries, country.nativeName];

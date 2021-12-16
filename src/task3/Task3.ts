@@ -1,4 +1,4 @@
-import { getAllCountriesByTypeAndValue } from '../task2/Task2';
+import { filterCountriesByValue } from '../task2/Task2';
 import { CountriesStats, Country, CountryStat, LangStat } from '../types/interfaces';
 
 const countryStat: CountryStat = {
@@ -13,47 +13,47 @@ const countriesStats: CountriesStats = {};
 ['EU', 'NAFTA', 'AU', 'other'].forEach((country) => (countriesStats[country] = { ...countryStat }));
 
 export const Task3 = (localStorageCountriesData: Country[]) => {
-  const euCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'EU', contain: true });
-  const naftaCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'NAFTA', contain: true });
-  const auCountries: Country[] = getAllCountriesByTypeAndValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'AU', contain: true });
+  const euCountries: Country[] = filterCountriesByValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'EU', contain: true });
+  const naftaCountries: Country[] = filterCountriesByValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'NAFTA', contain: true });
+  const auCountries: Country[] = filterCountriesByValue(localStorageCountriesData, { path: 'regionalBlocs.acronym', value: 'AU', contain: true });
   const countriesWithoutEuNaftaAu: Country[] = localStorageCountriesData.filter((country) => country.regionalBlocs?.some((bloc) => !['EU', 'NAFTA', 'AU'].includes(bloc.acronym)));
 
-  getCountryStats(euCountries, { acronym: 'EU', object: countriesStats });
-  getCountryStats(naftaCountries, { acronym: 'NAFTA', object: countriesStats });
-  getCountryStats(auCountries, { acronym: 'AU', object: countriesStats });
-  getCountryStats(countriesWithoutEuNaftaAu, { acronym: 'other', object: countriesStats });
+  insertCountryStats(euCountries, { acronym: 'EU', object: countriesStats });
+  insertCountryStats(naftaCountries, { acronym: 'NAFTA', object: countriesStats });
+  insertCountryStats(auCountries, { acronym: 'AU', object: countriesStats });
+  insertCountryStats(countriesWithoutEuNaftaAu, { acronym: 'other', object: countriesStats });
 
-  console.log('\n🔸 The name of the organization with the largest population:', sortObject(countriesStats, { value: 'population', place: 1, sort: 'desc' }));
-  console.log('\n🔸 Name of the organization with the second largest population:', sortObject(countriesStats, { value: 'population', place: 2, sort: 'desc' }));
-  console.log('\n🔸 The name of the organization occupying the third largest area:', sortObject(countriesStats, { value: 'area', place: 3, sort: 'desc' }));
+  console.log('\n🔸 The name of the organization with the largest population:', sortByCountriesStatsKeys(countriesStats, { value: 'population', place: 1, sort: 'desc' }));
+  console.log('\n🔸 Name of the organization with the second largest population:', sortByCountriesStatsKeys(countriesStats, { value: 'population', place: 2, sort: 'desc' }));
+  console.log('\n🔸 The name of the organization occupying the third largest area:', sortByCountriesStatsKeys(countriesStats, { value: 'area', place: 3, sort: 'desc' }));
   console.log(
     '\n🔸 Names of organizations with the largest and smallest number of languages assigned to them:\n',
     'Largest:',
-    sortObject(countriesStats, { value: 'languages', place: 1, sort: 'desc' }),
+    sortByCountriesStatsKeys(countriesStats, { value: 'languages', place: 1, sort: 'desc' }),
     '\n Smallest:',
-    sortObject(countriesStats, { value: 'languages', place: 1, sort: 'asc' })
+    sortByCountriesStatsKeys(countriesStats, { value: 'languages', place: 1, sort: 'asc' })
   );
-  console.log('\n🔸 Name of the organization using the largest number of currencies:', sortObject(countriesStats, { value: 'currencies', place: 1, sort: 'desc' }));
-  console.log('\n🔸 The name of the organization with the fewest number of member states:', sortObject(countriesStats, { value: 'countries', place: 1, sort: 'asc' }));
-  console.log('\n🔸 Native name of the language used in the greatest number of countries:', sortObjectLang(countriesStats, { value: 'area', place: 1, sort: 'desc' }));
-  console.log('\n🔸 Native name of the language used by the smallest number of people:', sortObjectLang(countriesStats, { value: 'population', place: 1, sort: 'asc' }));
+  console.log('\n🔸 Name of the organization using the largest number of currencies:', sortByCountriesStatsKeys(countriesStats, { value: 'currencies', place: 1, sort: 'desc' }));
+  console.log('\n🔸 The name of the organization with the fewest number of member states:', sortByCountriesStatsKeys(countriesStats, { value: 'countries', place: 1, sort: 'asc' }));
+  console.log('\n🔸 Native name of the language used in the greatest number of countries:', sortByCountriesStatsLangKeys(countriesStats, { value: 'area', place: 1, sort: 'desc' }));
+  console.log('\n🔸 Native name of the language used by the smallest number of people:', sortByCountriesStatsLangKeys(countriesStats, { value: 'population', place: 1, sort: 'asc' }));
   console.log(
     '\n🔸 Native names of the languages used in the largest and smallest area:\n',
     'Largest:',
-    sortObjectLang(countriesStats, { value: 'area', place: 1, sort: 'desc' }),
+    sortByCountriesStatsLangKeys(countriesStats, { value: 'area', place: 1, sort: 'desc' }),
     '\n Smallest:',
-    sortObjectLang(countriesStats, { value: 'area', place: 1, sort: 'asc' })
+    sortByCountriesStatsLangKeys(countriesStats, { value: 'area', place: 1, sort: 'asc' })
   );
 
   console.log('\n🟠 EU, NAFTA, AU and other countries: \n', countriesStats);
 };
 
-export const getCountryStats = (array: Country[], arg: { acronym: keyof CountriesStats; object: CountriesStats }) => {
+export const insertCountryStats = (array: Country[], arg: { acronym: keyof CountriesStats; object: CountriesStats }) => {
   const path = arg.object[arg.acronym];
 
   array.forEach((country) => {
     path.countries = [...path.countries, country.nativeName];
-    country.currencies?.every((currencie) => (path.currencies = [...path.currencies, currencie.name]));
+    country.currencies?.every((currency) => (path.currencies = [...path.currencies, currency.name]));
     path.population += country.population;
     typeof country.area === 'number' && (path.area += country.area);
 
@@ -84,7 +84,7 @@ export const getCountryStats = (array: Country[], arg: { acronym: keyof Countrie
   return arg.object;
 };
 
-export const sortObject = (object: CountriesStats, arg: { value: keyof CountryStat; place: number; sort: string }): string => {
+export const sortByCountriesStatsKeys = (object: CountriesStats, arg: { value: keyof CountryStat; place: number; sort: string }): string => {
   const countryKeys = Object.keys(object);
   const arrayOfValues: string[] | number[] = [];
   const index = arg.place - 1;
@@ -111,7 +111,7 @@ export const sortObject = (object: CountriesStats, arg: { value: keyof CountrySt
   return result.toString();
 };
 
-export const sortObjectLang = (object: CountriesStats, arg: { value: keyof LangStat; place: number; sort: string }): string => {
+export const sortByCountriesStatsLangKeys = (object: CountriesStats, arg: { value: keyof LangStat; place: number; sort: string }): string => {
   const countryKeys = Object.keys(object);
   const arrayOfValues: string[] | number[] = [];
   const index = arg.place - 1;

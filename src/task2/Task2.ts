@@ -3,46 +3,41 @@ import { Country } from '../types/interfaces';
 
 export const Task2 = async (localStorageCountriesData: Country[]) => {
   // Select all EU countries
-  const enterCountryValuePathToSearchFor: string = 'regionalBlocs.acronym';
-  const enterCountryValueToSearchFor: string = 'EU';
-  const whetherToContain: boolean = true;
-  const arrayOfCountries: Country[] | string = getAllCountriesByTypeAndValue(localStorageCountriesData, {
-    path: enterCountryValuePathToSearchFor,
-    value: enterCountryValueToSearchFor,
-    contain: whetherToContain,
-  });
-  console.log(`\n🔹 Countries of the ${enterCountryValueToSearchFor}: \n`, arrayOfCountries);
+  const countryPath: string = 'regionalBlocs.acronym';
+  const countryValue: string = 'EU';
+  const shouldContain: boolean = true;
+  const countries: Country[] | string = filterCountriesByValue(localStorageCountriesData, { path: countryPath, value: countryValue, contain: shouldContain });
+  console.log(`\n🔹 Countries of the ${countryPath}: ${countryValue}: \n`, countries);
 
-  // From all EU countries take countries which include any letter
-  const enterPhrasePathToSearchFor = 'name';
-  const enterPhraseToSearchFor: string = 'a';
-  const enterTypeOfSelectOrDelete: 'select' | 'delete' = 'delete';
-  const arrayOfCountriesContainingPhrase: Country[] | string = selectOrDeleteCountriesIncludesAnyLetter(arrayOfCountries, {
-    path: enterPhrasePathToSearchFor,
-    value: enterPhraseToSearchFor,
-    selectOrDelete: enterTypeOfSelectOrDelete,
-  });
-  console.log(`\n🔹 Countries of the ${enterCountryValueToSearchFor}, include '${enterPhraseToSearchFor.toUpperCase()}':\n`, arrayOfCountriesContainingPhrase);
+  // From all EU countries take countries which dont contain any letter
+  const phrasePath = 'name';
+  const phraseValue: string = 'a';
+  const phraseTypeValue: 'select' | 'delete' = 'delete';
+  const countriesPhrase: Country[] | string = filterCountries(countries, { path: phrasePath, value: phraseValue, selectOrDelete: phraseTypeValue });
+  console.log(`\n🔹 Countries of the ${countryPath}: ${countryValue}, dont contain '${phraseValue.toUpperCase()}' in ${phrasePath}:\n`, countriesPhrase);
 
-  // From all EU countries take countries which include 'a' and sort descending
-  const enterSortPathToSearchFor = 'population';
-  const enterSortToSearchFor: 'desc' | 'asc' = 'desc';
-  const arrayOfSortedCountries = sortCountriesByType(arrayOfCountriesContainingPhrase, { path: enterSortPathToSearchFor, sortType: enterSortToSearchFor });
-  console.log(`\n🔹 Countries of the ${enterCountryValueToSearchFor}, include '${enterPhraseToSearchFor.toUpperCase()}', sorted ${enterSortToSearchFor.toUpperCase()}: \n`, arrayOfSortedCountries);
-
-  // From all EU countries take countries which include 'a', sort descending and calculate the population sum
-  const enterLimit: number = 5;
-  const enterPathLimit = 'population';
-  const populateOfLimitedArray = calculateSumCountriesByType(arrayOfSortedCountries, { path: enterPathLimit, limit: enterLimit });
-  const isBigger = populateOfLimitedArray > configuration.numberOfPopulate ? '↗️ bigger' : '↘️ less';
+  // From all EU countries take countries which dont contain 'a' and sort descending
+  const sortPhrase = 'population';
+  const sortType: 'desc' | 'asc' = 'desc';
+  const countriesSorted = sortCountries(countriesPhrase, { path: sortPhrase, sortType: sortType });
   console.log(
-    `\n🔹 Countries of the ${enterCountryValueToSearchFor}, include '${enterPhraseToSearchFor.toUpperCase()}', sorted ${enterSortToSearchFor.toUpperCase()} and calculate population ➕: \n\n   Population ${enterLimit} countries is equal:`,
-    populateOfLimitedArray,
+    `\n🔹 Countries of the ${countryPath}: ${countryValue}, dont contain '${phraseValue.toUpperCase()}' in ${phrasePath}, sorted ${sortType.toUpperCase()} by ${sortPhrase}: \n`,
+    countriesSorted
+  );
+
+  // From all EU countries take countries which dont contain 'a', sort descending and calculate the population sum
+  const limit: number = 5;
+  const limitPath = 'population';
+  const countriesLimited = calculateCountriesSum(countriesSorted, { path: limitPath, limit: limit });
+  const isBigger = countriesLimited > configuration.numberOfPopulate ? '↗️ bigger' : '↘️ less';
+  console.log(
+    `\n🔹 Countries of the ${countryPath}: ${countryValue}, dont contain '${phraseValue.toUpperCase()}' in ${phrasePath}, sorted ${sortType.toUpperCase()} by ${sortPhrase} and calculate ${limitPath} ➕: \n\n   ${limitPath} ${limit} first countries is equal:`,
+    countriesLimited,
     `And it's ${isBigger} than 500 million.`
   );
 };
 
-export const getAllCountriesByTypeAndValue = (countries: Country[], arg: { path: string; value: string; contain: boolean }): Country[] => {
+export const filterCountriesByValue = (countries: Country[], arg: { path: string; value: string; contain: boolean }): Country[] => {
   const typesData = arg.path.split('.');
 
   return countries.filter((country: Country) => {
@@ -66,7 +61,7 @@ export const getAllCountriesByTypeAndValue = (countries: Country[], arg: { path:
   });
 };
 
-export const selectOrDeleteCountriesIncludesAnyLetter = (countries: Country[], arg: { path: keyof Country; value: string; selectOrDelete: 'select' | 'delete' }): Country[] => {
+export const filterCountries = (countries: Country[], arg: { path: keyof Country; value: string; selectOrDelete: 'select' | 'delete' }): Country[] => {
   return countries.filter((country) => {
     if (typeof country[arg.path] === 'string') {
       // @ts-ignore this if above sould be enough
@@ -75,7 +70,7 @@ export const selectOrDeleteCountriesIncludesAnyLetter = (countries: Country[], a
   });
 };
 
-export const sortCountriesByType = (array: Country[], arg: { path: keyof Country; sortType: 'desc' | 'asc' }): Country[] => {
+export const sortCountries = (array: Country[], arg: { path: keyof Country; sortType: 'desc' | 'asc' }): Country[] => {
   const sortArrayDesc = (first: any, next: any) => {
     return next[arg.path] - first[arg.path];
   };
@@ -87,7 +82,7 @@ export const sortCountriesByType = (array: Country[], arg: { path: keyof Country
   return arg.sortType === 'desc' ? [...array].sort(sortArrayDesc) : [...array].sort(sortArrayAsc);
 };
 
-export const calculateSumCountriesByType = (countries: Country[], arg: { path: keyof Country; limit: number }): number => {
+export const calculateCountriesSum = (countries: Country[], arg: { path: keyof Country; limit: number }): number => {
   const limitedArray = countries.slice(0, arg.limit);
 
   let sum = 0;

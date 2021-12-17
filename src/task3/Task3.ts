@@ -86,7 +86,7 @@ export const insertCountryStats = (array: Country[], args: { acronym: keyof Coun
 
 export const getCountryName = (object: CountriesStats, args: { path: keyof CountryStat; place: number; sort: string }): string => {
   const countryKeys = Object.keys(object);
-  const arrayOfValues: string[] | number[] = [];
+  const arrayOfValues: number[] = [];
   const place = args.place - 1;
   const result: string[] = [];
 
@@ -112,7 +112,7 @@ export const getCountryName = (object: CountriesStats, args: { path: keyof Count
 
 export const getLanguageName = (object: CountriesStats, args: { path: keyof LangStat; place: number; sort: string }): string => {
   const countryKeys = Object.keys(object);
-  const arrayOfValues: string[] | number[] = [];
+  const arrayOfValues: number[] = [];
   const place = args.place - 1;
   const result: string[] = [];
 
@@ -122,7 +122,7 @@ export const getLanguageName = (object: CountriesStats, args: { path: keyof Lang
     languagesKeys.forEach((langKey) => {
       const value = object[countryKey].languages[langKey][args.path];
       const valueLength = Array.isArray(value) && value.length;
-      if (Array.isArray(value)) arrayOfValues.push(valueLength);
+      if (Array.isArray(value) && typeof valueLength !== 'boolean') arrayOfValues.push(valueLength);
       if (typeof value !== 'object') arrayOfValues.push(value);
     });
   });
@@ -146,7 +146,7 @@ export const getLanguageName = (object: CountriesStats, args: { path: keyof Lang
   return endResult.toString();
 };
 
-const sortValues = (sort: string, array: string[] | number[]): string[] | number[] => {
+const sortValues = (sort: string, array: number[]): number[] => {
   if (sort === 'desc') {
     return array.sort((a: any, b: any) => b - a);
   } else {

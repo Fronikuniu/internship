@@ -1027,7 +1027,7 @@ var getLanguageName = function getLanguageName(object, args) {
     languagesKeys.forEach(function (langKey) {
       var value = object[countryKey].languages[langKey][args.path];
       var valueLength = Array.isArray(value) && value.length;
-      if (Array.isArray(value)) arrayOfValues.push(valueLength);
+      if (Array.isArray(value) && typeof valueLength !== 'boolean') arrayOfValues.push(valueLength);
       if (_typeof(value) !== 'object') arrayOfValues.push(value);
     });
   });

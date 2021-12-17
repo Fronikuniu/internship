@@ -696,7 +696,7 @@ var config_1 = require("../config");
 
 var Task2 = function Task2(localStorageCountriesData) {
   return __awaiter(void 0, void 0, void 0, function () {
-    var countryPath, countryValue, shouldContain, countries, phrasePath, phraseValue, phraseTypeValue, countriesPhrase, sortPhrase, sortType, countriesSorted, limit, limitPath, countriesLimited, isBigger;
+    var countryPath, countryValue, shouldContain, countries, phrasePath, phraseValue, phraseTypeValue, countriesPhrase, sortPath, sortType, countriesSorted, limit, limitPath, countriesLimited, isBigger;
     return __generator(this, function (_a) {
       countryPath = 'regionalBlocs.acronym';
       countryValue = 'EU';
@@ -716,13 +716,13 @@ var Task2 = function Task2(localStorageCountriesData) {
         selectOrDelete: phraseTypeValue
       });
       console.log("\n\uD83D\uDD39 Countries of the " + countryPath + ": " + countryValue + ", dont contain '" + phraseValue.toUpperCase() + "' in " + phrasePath + ":\n", countriesPhrase);
-      sortPhrase = 'population';
+      sortPath = 'population';
       sortType = 'desc';
       countriesSorted = exports.sortCountries(countriesPhrase, {
-        path: sortPhrase,
+        path: sortPath,
         sortType: sortType
       });
-      console.log("\n\uD83D\uDD39 Countries of the " + countryPath + ": " + countryValue + ", dont contain '" + phraseValue.toUpperCase() + "' in " + phrasePath + ", sorted " + sortType.toUpperCase() + " by " + sortPhrase + ": \n", countriesSorted);
+      console.log("\n\uD83D\uDD39 Countries of the " + countryPath + ": " + countryValue + ", dont contain '" + phraseValue.toUpperCase() + "' in " + phrasePath + ", sorted " + sortType.toUpperCase() + " by " + sortPath + ": \n", countriesSorted);
       limit = 5;
       limitPath = 'population';
       countriesLimited = exports.calculateCountriesSum(countriesSorted, {
@@ -730,7 +730,7 @@ var Task2 = function Task2(localStorageCountriesData) {
         limit: limit
       });
       isBigger = countriesLimited > config_1.configuration.numberOfPopulate ? '↗️ bigger' : '↘️ less';
-      console.log("\n\uD83D\uDD39 Countries of the " + countryPath + ": " + countryValue + ", dont contain '" + phraseValue.toUpperCase() + "' in " + phrasePath + ", sorted " + sortType.toUpperCase() + " by " + sortPhrase + " and calculate " + limitPath + " \u2795: \n\n   " + limitPath + " " + limit + " first countries is equal:", countriesLimited, "And it's " + isBigger + " than 500 million.");
+      console.log("\n\uD83D\uDD39 Countries of the " + countryPath + ": " + countryValue + ", dont contain '" + phraseValue.toUpperCase() + "' in " + phrasePath + ", sorted " + sortType.toUpperCase() + " by " + sortPath + " and calculate " + limitPath + " \u2795: \n\n   " + limitPath + " " + limit + " first countries is equal:", countriesLimited, "And it's " + isBigger + " than 500 million.");
       return [2
       /*return*/
       ];
@@ -740,64 +740,64 @@ var Task2 = function Task2(localStorageCountriesData) {
 
 exports.Task2 = Task2;
 
-var filterCountriesByValue = function filterCountriesByValue(countries, arg) {
-  var typesData = arg.path.split('.');
+var filterCountriesByValue = function filterCountriesByValue(countries, args) {
+  var path = args.path.split('.');
   return countries.filter(function (country) {
     // @ts-ignore
-    var arrayPath = country[typesData[0]];
+    var arrayPath = country[path[0]];
     if (!arrayPath) return false;
     var isStringArray = Array.isArray(arrayPath) && typeof arrayPath[0] === 'string';
     var isObjectArray = Array.isArray(arrayPath) && _typeof(arrayPath[0]) === 'object';
 
-    if (arg.contain) {
+    if (args.contain) {
       if (isObjectArray) return arrayPath.some(function (data) {
-        return data[typesData[1]] === arg.value;
+        return data[path[1]] === args.value;
       });
-      if (isStringArray) return arrayPath.includes(arg.value);
-      return arrayPath === arg.value;
+      if (isStringArray) return arrayPath.includes(args.value);
+      return arrayPath === args.value;
     } else {
       if (isObjectArray) return arrayPath.some(function (data) {
-        return data[typesData[1]] !== arg.value;
+        return data[path[1]] !== args.value;
       });
-      if (isStringArray) return !arrayPath.includes(arg.value);
-      return arrayPath !== arg.value;
+      if (isStringArray) return !arrayPath.includes(args.value);
+      return arrayPath !== args.value;
     }
   });
 };
 
 exports.filterCountriesByValue = filterCountriesByValue;
 
-var filterCountries = function filterCountries(countries, arg) {
+var filterCountries = function filterCountries(countries, args) {
   return countries.filter(function (country) {
-    if (typeof country[arg.path] === 'string') {
+    if (typeof country[args.path] === 'string') {
       // @ts-ignore this if above sould be enough
-      return arg.selectOrDelete === 'select' ? country[arg.path].toUpperCase().includes(arg.value.toUpperCase()) : !country[arg.path].toUpperCase().includes(arg.value.toUpperCase());
+      return args.selectOrDelete === 'select' ? country[args.path].toUpperCase().includes(args.value.toUpperCase()) : !country[args.path].toUpperCase().includes(args.value.toUpperCase());
     }
   });
 };
 
 exports.filterCountries = filterCountries;
 
-var sortCountries = function sortCountries(array, arg) {
+var sortCountries = function sortCountries(array, args) {
   var sortArrayDesc = function sortArrayDesc(first, next) {
-    return next[arg.path] - first[arg.path];
+    return next[args.path] - first[args.path];
   };
 
   var sortArrayAsc = function sortArrayAsc(first, next) {
-    return first[arg.path] - next[arg.path];
+    return first[args.path] - next[args.path];
   };
 
-  return arg.sortType === 'desc' ? __spreadArray([], array).sort(sortArrayDesc) : __spreadArray([], array).sort(sortArrayAsc);
+  return args.sortType === 'desc' ? __spreadArray([], array).sort(sortArrayDesc) : __spreadArray([], array).sort(sortArrayAsc);
 };
 
 exports.sortCountries = sortCountries;
 
-var calculateCountriesSum = function calculateCountriesSum(countries, arg) {
-  var limitedArray = countries.slice(0, arg.limit);
+var calculateCountriesSum = function calculateCountriesSum(countries, args) {
+  var limitedArray = countries.slice(0, args.limit);
   var sum = 0;
   limitedArray.forEach(function (country) {
     // @ts-ignore this if should be enough
-    if (typeof country[arg.path] === 'number') sum += country[arg.path];
+    if (typeof country[args.path] === 'number') sum += country[args.path];
   });
   return sum;
 };
@@ -835,7 +835,7 @@ var __spreadArray = this && this.__spreadArray || function (to, from) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sortByCountriesStatsLangKeys = exports.sortByCountriesStatsKeys = exports.insertCountryStats = exports.Task3 = void 0;
+exports.getLanguageName = exports.getCountryName = exports.insertCountryStats = exports.Task3 = void 0;
 
 var Task2_1 = require("../task2/Task2");
 
@@ -867,7 +867,7 @@ var Task3 = function Task3(localStorageCountriesData) {
     value: 'AU',
     contain: true
   });
-  var countriesWithoutEuNaftaAu = localStorageCountriesData.filter(function (country) {
+  var otherCountries = localStorageCountriesData.filter(function (country) {
     var _a;
 
     return (_a = country.regionalBlocs) === null || _a === void 0 ? void 0 : _a.some(function (bloc) {
@@ -886,60 +886,60 @@ var Task3 = function Task3(localStorageCountriesData) {
     acronym: 'AU',
     object: countriesStats
   });
-  exports.insertCountryStats(countriesWithoutEuNaftaAu, {
+  exports.insertCountryStats(otherCountries, {
     acronym: 'other',
     object: countriesStats
   });
-  console.log('\n🔸 The name of the organization with the largest population:', exports.sortByCountriesStatsKeys(countriesStats, {
-    value: 'population',
+  console.log('\n🔸 The name of the organization with the largest population:', exports.getCountryName(countriesStats, {
+    path: 'population',
     place: 1,
     sort: 'desc'
   }));
-  console.log('\n🔸 Name of the organization with the second largest population:', exports.sortByCountriesStatsKeys(countriesStats, {
-    value: 'population',
+  console.log('\n🔸 Name of the organization with the second largest population:', exports.getCountryName(countriesStats, {
+    path: 'population',
     place: 2,
     sort: 'desc'
   }));
-  console.log('\n🔸 The name of the organization occupying the third largest area:', exports.sortByCountriesStatsKeys(countriesStats, {
-    value: 'area',
+  console.log('\n🔸 The name of the organization occupying the third largest area:', exports.getCountryName(countriesStats, {
+    path: 'area',
     place: 3,
     sort: 'desc'
   }));
-  console.log('\n🔸 Names of organizations with the largest and smallest number of languages assigned to them:\n', 'Largest:', exports.sortByCountriesStatsKeys(countriesStats, {
-    value: 'languages',
+  console.log('\n🔸 Names of organizations with the largest and smallest number of languages assigned to them:\n', 'Largest:', exports.getCountryName(countriesStats, {
+    path: 'languages',
     place: 1,
     sort: 'desc'
-  }), '\n Smallest:', exports.sortByCountriesStatsKeys(countriesStats, {
-    value: 'languages',
+  }), '\n Smallest:', exports.getCountryName(countriesStats, {
+    path: 'languages',
     place: 1,
     sort: 'asc'
   }));
-  console.log('\n🔸 Name of the organization using the largest number of currencies:', exports.sortByCountriesStatsKeys(countriesStats, {
-    value: 'currencies',
+  console.log('\n🔸 Name of the organization using the largest number of currencies:', exports.getCountryName(countriesStats, {
+    path: 'currencies',
     place: 1,
     sort: 'desc'
   }));
-  console.log('\n🔸 The name of the organization with the fewest number of member states:', exports.sortByCountriesStatsKeys(countriesStats, {
-    value: 'countries',
+  console.log('\n🔸 The name of the organization with the fewest number of member states:', exports.getCountryName(countriesStats, {
+    path: 'countries',
     place: 1,
     sort: 'asc'
   }));
-  console.log('\n🔸 Native name of the language used in the greatest number of countries:', exports.sortByCountriesStatsLangKeys(countriesStats, {
-    value: 'area',
+  console.log('\n🔸 Native name of the language used in the greatest number of countries:', exports.getLanguageName(countriesStats, {
+    path: 'area',
     place: 1,
     sort: 'desc'
   }));
-  console.log('\n🔸 Native name of the language used by the smallest number of people:', exports.sortByCountriesStatsLangKeys(countriesStats, {
-    value: 'population',
+  console.log('\n🔸 Native name of the language used by the smallest number of people:', exports.getLanguageName(countriesStats, {
+    path: 'population',
     place: 1,
     sort: 'asc'
   }));
-  console.log('\n🔸 Native names of the languages used in the largest and smallest area:\n', 'Largest:', exports.sortByCountriesStatsLangKeys(countriesStats, {
-    value: 'area',
+  console.log('\n🔸 Native names of the languages used in the largest and smallest area:\n', 'Largest:', exports.getLanguageName(countriesStats, {
+    path: 'area',
     place: 1,
     sort: 'desc'
-  }), '\n Smallest:', exports.sortByCountriesStatsLangKeys(countriesStats, {
-    value: 'area',
+  }), '\n Smallest:', exports.getLanguageName(countriesStats, {
+    path: 'area',
     place: 1,
     sort: 'asc'
   }));
@@ -948,8 +948,8 @@ var Task3 = function Task3(localStorageCountriesData) {
 
 exports.Task3 = Task3;
 
-var insertCountryStats = function insertCountryStats(array, arg) {
-  var path = arg.object[arg.acronym];
+var insertCountryStats = function insertCountryStats(array, args) {
+  var path = args.object[args.acronym];
   array.forEach(function (country) {
     var _a;
 
@@ -989,58 +989,56 @@ var insertCountryStats = function insertCountryStats(array, arg) {
   var unique = new Set(path.currencies);
   path.currencies = Array.from(unique);
   path.countries = path.countries.sort().reverse();
-  return arg.object;
+  return args.object;
 };
 
 exports.insertCountryStats = insertCountryStats;
 
-var sortByCountriesStatsKeys = function sortByCountriesStatsKeys(object, arg) {
+var getCountryName = function getCountryName(object, args) {
   var countryKeys = Object.keys(object);
   var arrayOfValues = [];
-  var index = arg.place - 1;
+  var place = args.place - 1;
   var result = [];
   countryKeys.forEach(function (key) {
-    var value = object[key][arg.value];
+    var value = object[key][args.path];
     var valueLength = Object.getOwnPropertyNames(value).length;
     if (_typeof(value) === 'object') arrayOfValues.push(valueLength);
     if (_typeof(value) !== 'object') arrayOfValues.push(value);
   });
-  var sortedSetOfValues = new Set(sortArrayOfValues(arg.sort, arrayOfValues));
-  var sortedArrayOfValues = Array.from(sortedSetOfValues);
+  var uniqueValues = Array.from(new Set(sortValues(args.sort, arrayOfValues)));
   countryKeys.forEach(function (key) {
-    var value = object[key][arg.value];
+    var value = object[key][args.path];
     var valueLength = Object.getOwnPropertyNames(value).length;
-    if (_typeof(value) === 'object' && valueLength === sortedArrayOfValues[index]) result.push(key);
-    if (_typeof(value) !== 'object' && value === sortedArrayOfValues[index]) result.push(key);
+    if (_typeof(value) === 'object' && valueLength === uniqueValues[place]) result.push(key);
+    if (_typeof(value) !== 'object' && value === uniqueValues[place]) result.push(key);
   });
   return result.toString();
 };
 
-exports.sortByCountriesStatsKeys = sortByCountriesStatsKeys;
+exports.getCountryName = getCountryName;
 
-var sortByCountriesStatsLangKeys = function sortByCountriesStatsLangKeys(object, arg) {
+var getLanguageName = function getLanguageName(object, args) {
   var countryKeys = Object.keys(object);
   var arrayOfValues = [];
-  var index = arg.place - 1;
+  var place = args.place - 1;
   var result = [];
   countryKeys.forEach(function (countryKey) {
     var languagesKeys = Object.keys(object[countryKey].languages);
     languagesKeys.forEach(function (langKey) {
-      var value = object[countryKey].languages[langKey][arg.value];
+      var value = object[countryKey].languages[langKey][args.path];
       var valueLength = Array.isArray(value) && value.length;
       if (Array.isArray(value)) arrayOfValues.push(valueLength);
       if (_typeof(value) !== 'object') arrayOfValues.push(value);
     });
   });
-  var sortedSetOfValues = new Set(sortArrayOfValues(arg.sort, arrayOfValues));
-  var sortedArrayOfValues = Array.from(sortedSetOfValues);
+  var uniqueValues = Array.from(new Set(sortValues(args.sort, arrayOfValues)));
   countryKeys.forEach(function (countryKey) {
     var languagesKeys = Object.keys(object[countryKey].languages);
     languagesKeys.forEach(function (langKey) {
-      var value = object[countryKey].languages[langKey][arg.value];
+      var value = object[countryKey].languages[langKey][args.path];
       var valueLength = Array.isArray(value) && value.length;
-      if (_typeof(value) === 'object' && valueLength === sortedArrayOfValues[index]) result.push(object[countryKey].languages[langKey].name[0]);
-      if (_typeof(value) !== 'object' && value === sortedArrayOfValues[index]) result.push(object[countryKey].languages[langKey].name[0]);
+      if (_typeof(value) === 'object' && valueLength === uniqueValues[place]) result.push(object[countryKey].languages[langKey].name[0]);
+      if (_typeof(value) !== 'object' && value === uniqueValues[place]) result.push(object[countryKey].languages[langKey].name[0]);
     });
   });
   var set = new Set(result);
@@ -1048,9 +1046,9 @@ var sortByCountriesStatsLangKeys = function sortByCountriesStatsLangKeys(object,
   return endResult.toString();
 };
 
-exports.sortByCountriesStatsLangKeys = sortByCountriesStatsLangKeys;
+exports.getLanguageName = getLanguageName;
 
-var sortArrayOfValues = function sortArrayOfValues(sort, array) {
+var sortValues = function sortValues(sort, array) {
   if (sort === 'desc') {
     return array.sort(function (a, b) {
       return b - a;
@@ -1115,7 +1113,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56247" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60279" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
